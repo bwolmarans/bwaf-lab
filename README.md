@@ -28,6 +28,7 @@ terraform plan
 echo yes | terraform apply
 
 ansible-playbook -i ./myazure_rm.yml ./bwaf-playbook.yaml --limit bwaf_tf_vmbwaf*
+
 ansible-playbook -i ./myazure_rm.yml ./bwaf-dvwa.yaml --limit bwaf_tf_vmub* --key-file .ssh/id_rsa --u azureuser
 
 
