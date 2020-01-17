@@ -1,0 +1,152 @@
+- hosts: all
+  connection: local
+
+  vars_prompt:
+
+  - name: "hostname"
+    prompt: "Enter the waf hostname:"
+    private: no
+    default: "bwaf-tf.escapefromthe.net:8000"
+
+  - name: "username"
+    prompt: "Enter the BWAF username:"
+    private: no
+    default: "admin"
+   
+  - name: "password"
+    prompt: "Enter the account password:"
+    private: no
+    default: "Hello123456!"
+
+  vars:
+    bwafport: '8000'
+    api_url: 'http://{{hostname}}:{{bwafport}}/restapi'
+    api_version: 'v3.1'
+
+  tasks:
+    - set_fact:
+        private_ip: "{{private_ipv4_addresses | join }}"
+        hostname: "{{ public_ipv4_addresses | join  }}:8000"
+    - debug: var=private_ip
+    - debug: var=hostname
+
+#    - name: accept bwaf payg license agreement
+#      uri:
+#        url: 'http://{{hostname}}'
+#        body: {"name_sign":"studentforlife","email_sign":"student%40barracuda.com","company_sign":"barracuda","eula_hash_val":"ed4480205f84cde3e6bdce0c987348d1d90de9db","action":"save_signed_eula"}
+#        method: POST
+#        body_format: form-urlencoded
+#        status_code: [200, 405]
+#      delegate_to: localhost
+#    - pause:
+#        minutes: 2
+
+    - name: login to waf api
+      uri:
+        url: 'http://{{hostname }}/restapi/{{ api_version }}/login'
+        body: {"username":"{{ username }}","password":"{{ password }}"}
+        method: POST
+        body_format: json
+      delegate_to: localhost
+      register: mytoken
+    - debug: var=mytoken.json.token
+
+    - name: add a servicea
+      uri:
+        url: 'http://{{ hostname }}/restapi/{{ api_version }}/services/'
+        method: POST
+        headers:
+          Content-type: application/json
+          Accept: application/json
+        force_basic_auth: yes
+        user: '{{mytoken.json.token}}'
+        body_format: json
+        body: { "address-version": "IPv4", "app-id": "brett_app_id", "ip-address": "{{ private_ip }}", "name": "brett_service", "port": 81, "status": "On", "type": "HTTP"}
+        status_code: 201
+      delegate_to: localhost
+
+    - name: get all services
+      uri:
+        url: 'http://{{ hostname }}/restapi/{{ api_version }}/services/'
+        method: GET
+        headers:
+          Content-type: application/json
+          Accept: application/json
+        force_basic_auth: yes
+        user: '{{mytoken.json.token}}'
+      delegate_to: localhost
+      register: user_info
+    - debug: var=user_info
+
+
+    - name: get service port
+      uri:
+        url: "http://{{ hostname }}/restapi/{{ api_version }}/services/brett_service?groups=Service&parameters=port"
+        method: GET
+        headers:
+          Content-type: application/json
+          Accept: application/json
+        force_basic_auth: yes
+        user: '{{mytoken.json.token}}'
+      delegate_to: localhost
+      register: user_info
+    - debug: var=user_info
+
+
+    - name: change service port to 999
+      uri:
+        url: "http://{{ hostname }}/restapi/{{ api_version }}/services/brett_service"
+        headers:
+          Content-type: application/json
+          Accept: application/json
+        body: {"port":"999"}
+        method: PUT
+        body_format: json
+        user: '{{mytoken.json.token}}'
+        force_basic_auth: yes
+      delegate_to: localhost
+      register: user_info
+    - debug: var=user_info
+
+
+    - name: get service port
+      uri:
+        url: "http://{{ hostname }}/restapi/{{ api_version }}/services/brett_service?groups=Service&parameters=port"
+        method: GET
+        headers:
+          Content-type: application/json
+          Accept: application/json
+        force_basic_auth: yes
+        user: '{{mytoken.json.token}}'
+      delegate_to: localhost
+      register: user_info
+
+
+    - name: change service port to 82
+      uri:
+        url: "http://{{ hostname }}/restapi/{{ api_version }}/services/brett_service"
+        headers:
+          Content-type: application/json
+          Accept: application/json
+        body: {"port":"82"}
+        method: PUT
+        body_format: json
+        user: '{{mytoken.json.token}}'
+        force_basic_auth: yes
+      delegate_to: localhost
+      register: user_info
+    - debug: var=user_info
+
+
+    - name: get service port
+      uri:
+        url: "http://{{ hostname }}/restapi/{{ api_version }}/services/brett_service?groups=Service&parameters=port"
+        method: GET
+        headers:
+          Content-type: application/json
+          Accept: application/json
+        force_basic_auth: yes
+        user: '{{mytoken.json.token}}'
+      delegate_to: localhost
+      register: user_info
+
