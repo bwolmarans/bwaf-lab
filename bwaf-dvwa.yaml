@@ -1,0 +1,8 @@
+#ansible-playbook -i ./myazure_rm.yml ./bwaf-dvwa.yaml --limit bwaf_tf_vmub* --key-file .ssh/id_rsa --u azureuser
+- hosts: all
+
+  tasks:
+    
+    - name: return motd to registered var
+      command: docker run -d --rm -it -p 8080:80 vulnerables/web-dvwa
+      become: yes
