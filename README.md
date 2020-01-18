@@ -1,14 +1,14 @@
-#bwaf-lab#
+# bwaf-lab #
 
-##Diagram:##
+## Diagram: ##
 
 ![Test Image 3](https://github.com/bwolmarans/bwaf-lab/blob/master/rrrr.png)
 
-##End state:##
+## End state: ##
 
 ![Test Image 4](https://github.com/bwolmarans/bwaf-lab/blob/master/resources_list.png)
 
-###Requirements:###
+### Requirements: ###
 
 * Azure Subscription  
 * Azure Shell containing, among other things:
@@ -18,7 +18,7 @@
   
 * Optional: PC/Mac that can run Postman  
   
-###Instructions:###
+### Instructions: ###
   
 * az vm image accept-terms --urn barracudanetworks:waf:hourly:latest  
 * git clone https://github.com/bwolmarans/bwaf-lab.git  
