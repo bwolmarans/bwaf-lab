@@ -1,6 +1,9 @@
 # bwaf-lab
 
 # barracuda-waf-terraform
+Diagram:
+
+![Test Image 4](https://github.com/bwolmarans/barracuda-waf-terraform/blob/master/rrrr.PNG)
 
 End state:
 
