@@ -1,6 +1,12 @@
 # Create a resource group if it doesn’t exist
+variable "rg_name" {
+  type        = string
+  description = "Your resource group requires a unique name if you are sharing a subscription.  Please enter your firstname and  your phone number (no spaces, no special characters, no dashes, no parentheses) for example if your name is Brett and your phone number is (818) 292-7981, enter brett8182927981 "
+}
+
+# Create a resource group if it doesn’t exist
 resource "azurerm_resource_group" "myterraformgroup" {
-    name     = "bwaf_tf_rg"
+    name     = var.rg_name
     location = "eastus"
 
     tags = {
@@ -148,7 +154,7 @@ resource "azurerm_storage_account" "mystorageaccount" {
 
 data "azurerm_public_ip" "myterraformpublicip1" {
     name                = "${azurerm_public_ip.myterraformpublicip1.name}"
-    resource_group_name = "bwaf_tf_rg"
+    resource_group_name = var.rg_name
 }
 output "public_ip_address" {
     value = "${data.azurerm_public_ip.myterraformpublicip1.ip_address}"
