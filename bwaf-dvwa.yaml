@@ -3,6 +3,6 @@
 
   tasks:
     
-    - name: return motd to registered var
+    - name: run dvwa in docker container
       command: docker run -d --rm -it -p 8080:80 vulnerables/web-dvwa
       become: yes
