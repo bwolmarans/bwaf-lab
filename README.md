@@ -3,7 +3,7 @@
 # barracuda-waf-terraform
 Diagram:
 
-![Test Image 4](https://github.com/bwolmarans/barracuda-waf-terraform/blob/master/rrrr.PNG)
+![Test Image 3](https://github.com/bwolmarans/barracuda-waf-terraform/blob/master/rrrr.png)
 
 End state:
 
