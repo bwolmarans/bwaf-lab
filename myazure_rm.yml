@@ -1,6 +1,6 @@
 plugin: azure_rm
 include_vm_resource_groups:
-- bwaf_tf_rg
+- change_me
 auth_source: auto
 
 keyed_groups:
