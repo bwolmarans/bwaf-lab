@@ -22,6 +22,7 @@ Optional: PC/Mac that can run Postman
   
 Instructions:  
   
+az vm image accept-terms --urn barracudanetworks:waf:hourly:latest  
 git clone https://github.com/bwolmarans/bwaf-lab.git  
 cd bwaf-lab  
 ssh-keygen -m PEM -t rsa -b 2048 ( be careful about SSH keys don't over-write )  
@@ -55,21 +56,6 @@ What do you need to change to get a successful block?
 
 
 
-
-
-
-
-az vm image accept-terms --urn barracudanetworks:waf:hourly:latest
-
-terraform init
-
-terraform plan
-
-echo yes | terraform apply
-
-ansible-playbook -i ./myazure_rm.yml ./bwaf-playbook.yaml --limit bwaf_tf_vmbwaf*
-
-ansible-playbook -i ./myazure_rm.yml ./bwaf-dvwa.yaml --limit bwaf_tf_vmub* --key-file ~/.ssh/id_rsa --u azureuser
 
 
 #echo yes | terraform destroy
