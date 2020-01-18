@@ -51,11 +51,4 @@ http://<bwaf public ip>:80 , login, and repeat step 1 above.
 Did the BWAF successfully block the SQL injection attack?  
 Did the BWAF log the attack?  
 What do you need to change to get a successful block?  
-
-
-
-
-
-
-
-#echo yes | terraform destroy
+terraform destroy  
