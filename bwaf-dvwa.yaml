@@ -1,8 +1,15 @@
-#ansible-playbook -i ./myazure_rm.yml ./bwaf-dvwa.yaml --limit bwaf_tf_vmub* --key-file .ssh/id_rsa --u azureuser
+#ansible-playbook -i ./myazure_rm.yml ./bwaf-dvwa.yaml --limit bwaf_tf_vmub* --key-file ~/.ssh/id_rsa --u azureuser
 - hosts: all
 
   tasks:
-    
+    - name: update
+      command: apt-get update
+      become: yes
+ 
+    - name: install docker
+      command: apt-get --yes --force-yes install docker.io
+      become: yes
+ 
     - name: run dvwa in docker container
       command: docker run -d --rm -it -p 8080:80 vulnerables/web-dvwa
       become: yes
