@@ -76,8 +76,32 @@ resource "azurerm_network_security_group" "myterraformnsg" {
     }
 
     security_rule {
-        name                       = "8K"
+        name                       = "80"
         priority                   = 1002
+        direction                  = "Inbound"
+        access                     = "Allow"
+        protocol                   = "Tcp"
+        source_port_range          = "*"
+        destination_port_range     = "80"
+        source_address_prefix      = "*"
+        destination_address_prefix = "*"
+    }
+
+    security_rule {
+        name                       = "8080"
+        priority                   = 1003
+        direction                  = "Inbound"
+        access                     = "Allow"
+        protocol                   = "Tcp"
+        source_port_range          = "*"
+        destination_port_range     = "8080"
+        source_address_prefix      = "*"
+        destination_address_prefix = "*"
+    }
+
+    security_rule {
+        name                       = "8K"
+        priority                   = 1004
         direction                  = "Inbound"
         access                     = "Allow"
         protocol                   = "Tcp"
@@ -86,6 +110,8 @@ resource "azurerm_network_security_group" "myterraformnsg" {
         source_address_prefix      = "*"
         destination_address_prefix = "*"
     }
+    
+
     tags = {
         environment = "Terraform Demo"
     }
