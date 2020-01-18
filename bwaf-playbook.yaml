@@ -61,7 +61,7 @@
         force_basic_auth: yes
         user: '{{mytoken.json.token}}'
         body_format: json
-        body: { "address-version": "IPv4", "app-id": "brett_app_id", "ip-address": "{{ private_ip }}", "name": "brett_service", "port": 81, "status": "On", "type": "HTTP"}
+        body: { "address-version": "IPv4", "app-id": "dvwa_app_id", "ip-address": "{{ private_ip }}", "name": "dvwa_service", "port": 80, "status": "On", "type": "HTTP"}
         status_code: 201
       delegate_to: localhost
 
@@ -122,13 +122,13 @@
       register: user_info
 
 
-    - name: change service port to 82
+    - name: change service port to 80
       uri:
         url: "http://{{ hostname }}/restapi/{{ api_version }}/services/brett_service"
         headers:
           Content-type: application/json
           Accept: application/json
-        body: {"port":"82"}
+        body: {"port":"80"}
         method: PUT
         body_format: json
         user: '{{mytoken.json.token}}'
