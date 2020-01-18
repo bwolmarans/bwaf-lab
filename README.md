@@ -1,13 +1,14 @@
 # bwaf-lab
 
 # barracuda-waf-terraform
+
 Diagram:
 
-![Test Image 3](https://github.com/bwolmarans/barracuda-waf-terraform/blob/master/rrrr.png)
+![Test Image 3](https://github.com/bwolmarans/bwaf-lab/blob/master/rrrr.png)
 
 End state:
 
-![Test Image 4](https://github.com/bwolmarans/barracuda-waf-terraform/blob/master/resources_list.png)
+![Test Image 4](https://github.com/bwolmarans/bwaf-lab/blob/master/resources_list.png)
 
 get these files:
 
