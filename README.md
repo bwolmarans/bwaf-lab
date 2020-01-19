@@ -25,8 +25,20 @@
 * cd bwaf-lab  
 * ssh-keygen -m PEM -t rsa -b 2048 ( be careful about SSH keys don't over-write )  
 * terraform init  
+* examine the terraform configuration file
 * terraform plan ( You need a unique ID for the Resource Group. Enter your first name + your phone number when asked. For example, my name is Brett and my phone number is (818) 292-7981, so I will enter brett8182925555 )  
 * terraform apply ( enter unique ID as above )  
+* #CURL COMMANDS and SSH
+* curl http://<your BWAF public IP>:8000/restapi/v3.1/login -X POST -H Content-Type:application/json -d '{"username": "admin", "password": "Hello123456!"}' 
+* curl -X POST "http://<your BWAF public IP>:8000/restapi/v3.1/services " -H "accept: application/json" -u "<your token>:" -H "Content-Type: application/json" -d '{ "address-version": "IPv4", "app-id": "curl_app_id", "ip-address": "10.0.1.5", "name": "curl_service", "port": 80, "status": "On", "type": "HTTP"}'
+* curl -X POST "http://<your BWAF public IP>:8000/restapi/v3.1/services/curl_service/servers " -H "accept: application/json" -u "<your token>:" -H "Content-Type: application/json" -d '{ "ip-address": "10.0.1.4", "status": "In Service", "comments": "string", "port": 8080, "address-version": "IPv4", "identifier": "IP Address", "name": "curl_server"}'
+* ssh azureuser@<your ubuntu public IP>
+* sudo su
+* apt-get --yes --force-yes update
+* apt install docker.io --yes --force-yes
+* docker run -d --rm -it -p 8080:80 vulnerables/web-dvwa
+* manually test. then delete server and service.
+* examine the ansible playbook
 * Edit myazure_rm.yaml, change the string change_me to your unique ID.  
 * ansible-playbook -i ./myazure_rm.yml ./bwaf-playbook.yaml --limit bwaf_tf_vmbwaf*  
 * ansible-playbook -i ./myazure_rm.yml ./bwaf-dvwa.yaml --limit bwaf_tf_vmub* --key-file ~/.ssh/id_rsa --u azureuser  
