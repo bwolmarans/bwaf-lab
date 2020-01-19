@@ -1,0 +1,9 @@
+#CURL COMMANDS and SSH
+curl http://<your BWAF public IP>:8000/restapi/v3.1/login -X POST -H Content-Type:application/json -d '{"username": "admin", "password": "Hello123456!"}' 
+curl -X POST "http://<your BWAF public IP>:8000/restapi/v3.1/services " -H "accept: application/json" -u "eyJldCI6IjE1NzkzOTE3NTAiLCJ1c2VyIjoiYWRtaW4iLCJwYXNzd29yZCI6IjNkYWMwMDMzNTI2\nZGFjMDUxZThmZmM0YzY4ZWEzZmU0In0=\n:" -H "Content-Type: application/json" -d '{ "address-version": "IPv4", "app-id": "curl_app_id", "ip-address": "10.0.1.5", "name": "curl_service", "port": 80, "status": "On", "type": "HTTP"}'
+curl -X POST "http://<your BWAF public IP>:8000/restapi/v3.1/services/curl_service/servers " -H "accept: application/json" -u "eyJldCI6IjE1NzkzOTE3NzMiLCJwYXNzd29yZCI6ImZkZTczYzNlNTMzM2JlOWRkZmQwNTQ1NmE4\nZDViMWI5IiwidXNlciI6ImFkbWluIn0=\n:" -H "Content-Type: application/json" -d '{ "ip-address": "10.0.1.4", "status": "In Service", "comments": "string", "port": 8080, "address-version": "IPv4", "identifier": "IP Address", "name": "curl_server"}'
+ssh azureuser@<your ubuntu public IP>
+sudo su
+apt-get --yes --force-yes update
+apt install docker.io --yes --force-yes
+docker run -d --rm -it -p 8080:80 vulnerables/web-dvwa
