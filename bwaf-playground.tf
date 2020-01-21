@@ -1,17 +1,12 @@
 # Create a resource group if it doesn’t exist
 variable "rg_name" {
   type        = string
-  description = "Your resource group requires a unique name if you are sharing a subscription.  Please enter your firstname and  your phone number (no spaces, no special characters, no dashes, no parentheses) for example if your name is Brett and your phone number is (818) 292-7981, enter brett8182927981 "
+  description = "Enter the resource group to create resources in. For SEs, this is typically Firstname_Lastname (e.g. John_Smith) "
 }
 
-# Create a resource group if it doesn’t exist
-resource "azurerm_resource_group" "myterraformgroup" {
+# Import the existing resource group so we can create resources in it
+data "azurerm_resource_group" "myterraformgroup" {
     name     = var.rg_name
-    location = "eastus"
-
-    tags = {
-        environment = "Terraform Demo"
-    }
 }
 
 # Create virtual network
@@ -19,7 +14,7 @@ resource "azurerm_virtual_network" "myterraformnetwork" {
     name                = "bwaf_tf_vnet"
     address_space       = ["10.0.0.0/16"]
     location            = "eastus"
-    resource_group_name = azurerm_resource_group.myterraformgroup.name
+    resource_group_name = data.azurerm_resource_group.myterraformgroup.name
 
     tags = {
         environment = "Terraform Demo"
@@ -29,7 +24,7 @@ resource "azurerm_virtual_network" "myterraformnetwork" {
 # Create subnet
 resource "azurerm_subnet" "myterraformsubnet" {
     name                 = "bwaf_tf_subnet"
-    resource_group_name  = azurerm_resource_group.myterraformgroup.name
+    resource_group_name  = data.azurerm_resource_group.myterraformgroup.name
     virtual_network_name = azurerm_virtual_network.myterraformnetwork.name
     address_prefix       = "10.0.1.0/24"
 }
@@ -38,7 +33,7 @@ resource "azurerm_subnet" "myterraformsubnet" {
 resource "azurerm_public_ip" "myterraformpublicip2" {
     name                         = "bwaf_tf_publicip2"
     location                     = "eastus"
-    resource_group_name          = azurerm_resource_group.myterraformgroup.name
+    resource_group_name          = data.azurerm_resource_group.myterraformgroup.name
     allocation_method            = "Dynamic"
 
     tags = {
@@ -49,7 +44,7 @@ resource "azurerm_public_ip" "myterraformpublicip2" {
 resource "azurerm_public_ip" "myterraformpublicip1" {
     name                         = "bwaf_tf_publicip1"
     location                     = "eastus"
-    resource_group_name          = azurerm_resource_group.myterraformgroup.name
+    resource_group_name          = data.azurerm_resource_group.myterraformgroup.name
     allocation_method            = "Dynamic"
 
     tags = {
@@ -61,7 +56,7 @@ resource "azurerm_public_ip" "myterraformpublicip1" {
 resource "azurerm_network_security_group" "myterraformnsg" {
     name                = "bwaf_tf_nsg"
     location            = "eastus"
-    resource_group_name = azurerm_resource_group.myterraformgroup.name
+    resource_group_name = data.azurerm_resource_group.myterraformgroup.name
     
     security_rule {
         name                       = "SSH"
@@ -121,7 +116,7 @@ resource "azurerm_network_security_group" "myterraformnsg" {
 resource "azurerm_network_interface" "myterraformnic1" {
     name                      = "bwaf_tf_nic1"
     location                  = "eastus"
-    resource_group_name       = azurerm_resource_group.myterraformgroup.name
+    resource_group_name       = data.azurerm_resource_group.myterraformgroup.name
     network_security_group_id = azurerm_network_security_group.myterraformnsg.id
 
     ip_configuration {
@@ -140,7 +135,7 @@ resource "azurerm_network_interface" "myterraformnic1" {
 resource "azurerm_network_interface" "myterraformnic2" {
     name                      = "bwaf_tf_nic2"
     location                  = "eastus"
-    resource_group_name       = azurerm_resource_group.myterraformgroup.name
+    resource_group_name       = data.azurerm_resource_group.myterraformgroup.name
     network_security_group_id = azurerm_network_security_group.myterraformnsg.id
 
     ip_configuration {
@@ -159,7 +154,7 @@ resource "azurerm_network_interface" "myterraformnic2" {
 resource "random_id" "randomId" {
     keepers = {
         # Generate a new ID only when a new resource group is defined
-        resource_group = azurerm_resource_group.myterraformgroup.name
+        resource_group = data.azurerm_resource_group.myterraformgroup.name
     }
     
     byte_length = 8
@@ -168,7 +163,7 @@ resource "random_id" "randomId" {
 # Create storage account for boot diagnostics
 resource "azurerm_storage_account" "mystorageaccount" {
     name                        = "diag${random_id.randomId.hex}"
-    resource_group_name         = azurerm_resource_group.myterraformgroup.name
+    resource_group_name         = data.azurerm_resource_group.myterraformgroup.name
     location                    = "eastus"
     account_tier                = "Standard"
     account_replication_type    = "LRS"
@@ -198,7 +193,7 @@ resource "azurerm_virtual_machine" "myterraformbwaf" {
       product            = "waf"
     }
     
-    resource_group_name   = azurerm_resource_group.myterraformgroup.name
+    resource_group_name   = data.azurerm_resource_group.myterraformgroup.name
     network_interface_ids = [azurerm_network_interface.myterraformnic1.id]
     vm_size               = "Standard_DS1_v2"
 
@@ -241,7 +236,7 @@ resource "azurerm_virtual_machine" "myterraformbwaf" {
 resource "azurerm_virtual_machine" "myterraformvm" {
     name                  = "bwaf_tf_vmubunutu"
     location              = "eastus"
-    resource_group_name   = azurerm_resource_group.myterraformgroup.name
+    resource_group_name   = data.azurerm_resource_group.myterraformgroup.name
     network_interface_ids = [azurerm_network_interface.myterraformnic2.id]
     vm_size               = "Standard_DS1_v2"
 
