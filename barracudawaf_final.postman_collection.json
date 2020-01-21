@@ -1,0 +1,842 @@
+{
+	"info": {
+		"_postman_id": "dde01b57-2ba2-419e-8224-7657b674c6a1",
+		"name": "barracudawaf_final",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Barracuda WAF Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d4d27e2c-a601-419c-869e-fb9aa6a1b665",
+						"exec": [
+							"var mydata = pm.response.json();\r",
+							"pm.environment.set(\"token\", mydata.token);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "username",
+							"value": "admin",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "Hello123456!",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://{{url}}/restapi/v3.1/login",
+					"protocol": "http",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"restapi",
+						"v3.1",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create a frontend service",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "{{token}}",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"address-version\": \"IPv4\",\n    \"ip-address\": \"{{bwaf_private_ip}}\",\n    \"name\": \"{{service}}\",\n    \"port\": 80,\n    \"status\": \"On\",\n    \"type\": \"HTTP\"\n}"
+				},
+				"url": {
+					"raw": "http://{{url}}/restapi/v3.1/services",
+					"protocol": "http",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"restapi",
+						"v3.1",
+						"services"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create a backend server",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "{{token}}",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"ip-address\": \"{{ubuntu_private_ip}}\",\n    \"status\": \"In Service\",\n    \"comments\": \"string\",\n    \"port\": 8080,\n    \"address-version\": \"IPv4\",\n    \"identifier\": \"IP Address\",\n    \"name\": \"postman_server\"\n}"
+				},
+				"url": {
+					"raw": "http://{{url}}/restapi/v3.1/services/{{service}}/servers",
+					"protocol": "http",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"restapi",
+						"v3.1",
+						"services",
+						"{{service}}",
+						"servers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get all services",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "{{token}}",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{url}}/restapi/v3.1/services",
+					"protocol": "http",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"restapi",
+						"v3.1",
+						"services"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get all details about a service",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "{{token}}",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{url}}/restapi/v3.1/services/{{service}}",
+					"protocol": "http",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"restapi",
+						"v3.1",
+						"services",
+						"{{service}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get service port",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "af78164f-377e-4400-a654-5ca0080077d2",
+						"exec": [
+							"pm.test(\"Port is 80\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"80\");",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "{{token}}",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{url}}/restapi/v3.1/services/{{service}}?groups=Service&parameters=port",
+					"protocol": "http",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"restapi",
+						"v3.1",
+						"services",
+						"{{service}}"
+					],
+					"query": [
+						{
+							"key": "groups",
+							"value": "Service"
+						},
+						{
+							"key": "parameters",
+							"value": "port"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "change service port",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "{{token}}",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"port\": \"7777\"\n}"
+				},
+				"url": {
+					"raw": "http://{{url}}/restapi/v3.1/services/{{service}}",
+					"protocol": "http",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"restapi",
+						"v3.1",
+						"services",
+						"{{service}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get service port Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "22290552-ecc9-4ab2-8218-b667cc1b50cd",
+						"exec": [
+							"pm.test(\"Port is 7777\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"7777\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "{{token}}",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{url}}/restapi/v3.1/services/{{service}}?groups=Service&parameters=port",
+					"protocol": "http",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"restapi",
+						"v3.1",
+						"services",
+						"{{service}}"
+					],
+					"query": [
+						{
+							"key": "groups",
+							"value": "Service"
+						},
+						{
+							"key": "parameters",
+							"value": "port"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "change service port Copy",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "{{token}}",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"port\": \"8080\"\n}"
+				},
+				"url": {
+					"raw": "http://{{url}}/restapi/v3.1/services/{{service}}",
+					"protocol": "http",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"restapi",
+						"v3.1",
+						"services",
+						"{{service}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get service port Copy Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "55d41771-138e-4e86-b3c6-6931d8484e4b",
+						"exec": [
+							"pm.test(\"Port is back to 8080\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"8080\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "{{token}}",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{url}}/restapi/v3.1/services/{{service}}?groups=Service&parameters=port",
+					"protocol": "http",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"restapi",
+						"v3.1",
+						"services",
+						"{{service}}"
+					],
+					"query": [
+						{
+							"key": "groups",
+							"value": "Service"
+						},
+						{
+							"key": "parameters",
+							"value": "port"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "check service mode",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "{{token}}",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "port",
+							"value": "9090",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://{{url}}/restapi/v3.1/services/{{service}}?groups=Basic Security",
+					"protocol": "http",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"restapi",
+						"v3.1",
+						"services",
+						"{{service}}"
+					],
+					"query": [
+						{
+							"key": "groups",
+							"value": "Basic Security"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "change mode to active",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "{{token}}",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"mode\": \"Active\"\n}"
+				},
+				"url": {
+					"raw": "http://{{url}}/restapi/v3.1/services/{{service}}/basic-security",
+					"protocol": "http",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"restapi",
+						"v3.1",
+						"services",
+						"{{service}}",
+						"basic-security"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "check service mode Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "39907206-c618-4752-9074-a4d8fddb5b05",
+						"exec": [
+							"pm.test(\"Mode is Active\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"Active\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "{{token}}",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "port",
+							"value": "9090",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://{{url}}/restapi/v3.1/services/{{service}}?groups=Basic Security",
+					"protocol": "http",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"restapi",
+						"v3.1",
+						"services",
+						"{{service}}"
+					],
+					"query": [
+						{
+							"key": "groups",
+							"value": "Basic Security"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "change mode to passive",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "{{token}}",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"mode\": \"Passive\"\n}"
+				},
+				"url": {
+					"raw": "http://{{url}}/restapi/v3.1/services/{{service}}/basic-security",
+					"protocol": "http",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"restapi",
+						"v3.1",
+						"services",
+						"{{service}}",
+						"basic-security"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "check service mode Copy Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6358846e-4241-4317-8ccd-66247571f879",
+						"exec": [
+							"pm.test(\"Mode is Passive\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"Passive\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "{{token}}",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "port",
+							"value": "9090",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://{{url}}/restapi/v3.1/services/{{service}}?groups=Basic Security",
+					"protocol": "http",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"restapi",
+						"v3.1",
+						"services",
+						"{{service}}"
+					],
+					"query": [
+						{
+							"key": "groups",
+							"value": "Basic Security"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer"
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "26e2a84f-7bae-41f4-a639-91d78e81880b",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "c4eed148-3455-4a8b-8308-5b165010a8db",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
