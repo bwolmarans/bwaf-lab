@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "dde01b57-2ba2-419e-8224-7657b674c6a1",
-		"name": "barracudawaf2",
+		"name": "barracudawaf_final",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -9,7 +9,7 @@
 			"name": "Barracuda WAF Login",
 			"event": [
 				{
-					"listen": "test",a
+					"listen": "test",
 					"script": {
 						"id": "d4d27e2c-a601-419c-869e-fb9aa6a1b665",
 						"exec": [
@@ -96,12 +96,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"address-version\": \"IPv4\",\n    \"ip-address\": \"{{bwaf_private_ip}}\",\n    \"name\": \"{{service}}\",\n    \"port\": 80,\n    \"status\": \"On\",\n    \"type\": \"HTTP\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
+					"raw": "{\n    \"address-version\": \"IPv4\",\n    \"ip-address\": \"{{bwaf_private_ip}}\",\n    \"name\": \"{{service}}\",\n    \"port\": 80,\n    \"status\": \"On\",\n    \"type\": \"HTTP\"\n}"
 				},
 				"url": {
 					"raw": "http://{{url}}/restapi/v3.1/services",
@@ -152,12 +147,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"ip-address\": \"{{ubuntu_private_ip}}\",\n    \"status\": \"In Service\",\n    \"comments\": \"string\",\n    \"port\": 8080,\n    \"address-version\": \"IPv4\",\n    \"identifier\": \"IP Address\",\n    \"name\": \"postman_server\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
+					"raw": "{\n    \"ip-address\": \"{{ubuntu_private_ip}}\",\n    \"status\": \"In Service\",\n    \"comments\": \"string\",\n    \"port\": 8080,\n    \"address-version\": \"IPv4\",\n    \"identifier\": \"IP Address\",\n    \"name\": \"postman_server\"\n}"
 				},
 				"url": {
 					"raw": "http://{{url}}/restapi/v3.1/services/{{service}}/servers",
@@ -343,12 +333,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"port\": \"7777\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
+					"raw": "{\n\t\"port\": \"7777\"\n}"
 				},
 				"url": {
 					"raw": "http://{{url}}/restapi/v3.1/services/{{service}}",
@@ -460,12 +445,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"port\": \"8080\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
+					"raw": "{\n\t\"port\": \"8080\"\n}"
 				},
 				"url": {
 					"raw": "http://{{url}}/restapi/v3.1/services/{{service}}",
@@ -627,12 +607,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"mode\": \"Active\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
+					"raw": "{\n\t\"mode\": \"Active\"\n}"
 				},
 				"url": {
 					"raw": "http://{{url}}/restapi/v3.1/services/{{service}}/basic-security",
@@ -749,12 +724,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"mode\": \"Passive\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
+					"raw": "{\n\t\"mode\": \"Passive\"\n}"
 				},
 				"url": {
 					"raw": "http://{{url}}/restapi/v3.1/services/{{service}}/basic-security",
