@@ -1,62 +1,62 @@
 # Create a resource group if it doesn’t exist
 variable "rg_name" {
   type        = string
-  description = "Enter the resource group to create resources in. For SEs, this is typically Firstname_Lastname (e.g. John_Smith) "
+  description = "Enter the resource group to create resources in. For SEs at Barracuda Networks, this is typically Firstname_Lastname (e.g. John_Smith) "
 }
 
 # Import the existing resource group so we can create resources in it
-data "azurerm_resource_group" "myterraformgroup" {
+data "azurerm_resource_group" "group_playground" {
     name     = var.rg_name
 }
 
 # Create virtual network
-resource "azurerm_virtual_network" "myterraformnetwork" {
-    name                = "bwaf_tf_vnet"
+resource "azurerm_virtual_network" "vnet_playground" {
+    name                = "vnet_playground"
     address_space       = ["10.0.0.0/16"]
     location            = "eastus"
-    resource_group_name = data.azurerm_resource_group.myterraformgroup.name
+    resource_group_name = data.azurerm_resource_group.group_playground.name
 
     tags = {
-        environment = "Terraform Demo"
+        environment = "Terraform BWAF"
     }
 }
 
 # Create subnet
-resource "azurerm_subnet" "myterraformsubnet" {
-    name                 = "bwaf_tf_subnet"
-    resource_group_name  = data.azurerm_resource_group.myterraformgroup.name
-    virtual_network_name = azurerm_virtual_network.myterraformnetwork.name
+resource "azurerm_subnet" "subnet_playground" {
+    name                 = "subnet_playground"
+    resource_group_name  = data.azurerm_resource_group.group_playground.name
+    virtual_network_name = azurerm_virtual_network.vnet_playground.name
     address_prefix       = "10.0.1.0/24"
 }
 
 # Create public IPs
-resource "azurerm_public_ip" "myterraformpublicip2" {
-    name                         = "bwaf_tf_publicip2"
+resource "azurerm_public_ip" "public_ip_ubuntu" {
+    name                         = "public_ip_ubuntu"
     location                     = "eastus"
-    resource_group_name          = data.azurerm_resource_group.myterraformgroup.name
+    resource_group_name          = data.azurerm_resource_group.group_playground.name
     allocation_method            = "Dynamic"
 
     tags = {
-        environment = "Terraform Demo"
+        environment = "Terraform BWAF"
     }
 }
 
-resource "azurerm_public_ip" "myterraformpublicip1" {
-    name                         = "bwaf_tf_publicip1"
+resource "azurerm_public_ip" "public_ip_waf" {
+    name                         = "public_ip_waf"
     location                     = "eastus"
-    resource_group_name          = data.azurerm_resource_group.myterraformgroup.name
+    resource_group_name          = data.azurerm_resource_group.group_playground.name
     allocation_method            = "Dynamic"
 
     tags = {
-        environment = "Terraform Demo"
+        environment = "Terraform BWAF"
     }
 }
 
 # Create Network Security Group and rule
-resource "azurerm_network_security_group" "myterraformnsg" {
-    name                = "bwaf_tf_nsg"
+resource "azurerm_network_security_group" "nsg_playground" {
+    name                = "nsg_playground"
     location            = "eastus"
-    resource_group_name = data.azurerm_resource_group.myterraformgroup.name
+    resource_group_name = data.azurerm_resource_group.group_playground.name
     
     security_rule {
         name                       = "SSH"
@@ -108,45 +108,45 @@ resource "azurerm_network_security_group" "myterraformnsg" {
     
 
     tags = {
-        environment = "Terraform Demo"
+        environment = "Terraform BWAF"
     }
 }
 
 # Create network interface
-resource "azurerm_network_interface" "myterraformnic1" {
-    name                      = "bwaf_tf_nic1"
+resource "azurerm_network_interface" "nic_bwaf" {
+    name                      = "nic_bwaf"
     location                  = "eastus"
-    resource_group_name       = data.azurerm_resource_group.myterraformgroup.name
-    network_security_group_id = azurerm_network_security_group.myterraformnsg.id
+    resource_group_name       = data.azurerm_resource_group.group_playground.name
+    network_security_group_id = azurerm_network_security_group.nsg_playground.id
 
     ip_configuration {
-        name                          = "bwaf_tf_niccfg1"
-        subnet_id                     = azurerm_subnet.myterraformsubnet.id
+        name                          = "nic_cfg_bwaf"
+        subnet_id                     = azurerm_subnet.subnet_playground.id
         private_ip_address_allocation = "Dynamic"
-        public_ip_address_id          = azurerm_public_ip.myterraformpublicip1.id
+        public_ip_address_id          = azurerm_public_ip.public_ip_waf.id
     }
 
     tags = {
-        environment = "Terraform Demo"
+        environment = "Terraform BWAF"
     }
 }
 
 # Create network interface
-resource "azurerm_network_interface" "myterraformnic2" {
-    name                      = "bwaf_tf_nic2"
+resource "azurerm_network_interface" "nic_ubuntu" {
+    name                      = "nic_ubuntu"
     location                  = "eastus"
-    resource_group_name       = data.azurerm_resource_group.myterraformgroup.name
-    network_security_group_id = azurerm_network_security_group.myterraformnsg.id
+    resource_group_name       = data.azurerm_resource_group.group_playground.name
+    network_security_group_id = azurerm_network_security_group.nsg_playground.id
 
     ip_configuration {
-        name                          = "bwaf_tf_niccfg2"
-        subnet_id                     = azurerm_subnet.myterraformsubnet.id
+        name                          = "nic_cfg_ubuntu"
+        subnet_id                     = azurerm_subnet.subnet_playground.id
         private_ip_address_allocation = "Dynamic"
-        public_ip_address_id          = azurerm_public_ip.myterraformpublicip2.id
+        public_ip_address_id          = azurerm_public_ip.public_ip_ubuntu.id
     }
 
     tags = {
-        environment = "Terraform Demo"
+        environment = "Terraform BWAF"
     }
 }
 
@@ -154,38 +154,38 @@ resource "azurerm_network_interface" "myterraformnic2" {
 resource "random_id" "randomId" {
     keepers = {
         # Generate a new ID only when a new resource group is defined
-        resource_group = data.azurerm_resource_group.myterraformgroup.name
+        resource_group = data.azurerm_resource_group.group_playground.name
     }
     
     byte_length = 8
 }
 
 # Create storage account for boot diagnostics
-resource "azurerm_storage_account" "mystorageaccount" {
+resource "azurerm_storage_account" "storage_account_playground" {
     name                        = "diag${random_id.randomId.hex}"
-    resource_group_name         = data.azurerm_resource_group.myterraformgroup.name
+    resource_group_name         = data.azurerm_resource_group.group_playground.name
     location                    = "eastus"
     account_tier                = "Standard"
     account_replication_type    = "LRS"
 
     tags = {
-        environment = "Terraform Demo"
+        environment = "Terraform BWAF"
     }
 }
 
-data "azurerm_public_ip" "myterraformpublicip1" {
-    name                = "${azurerm_public_ip.myterraformpublicip1.name}"
+data "azurerm_public_ip" "public_ip_waf" {
+    name                = "${azurerm_public_ip.public_ip_waf.name}"
     resource_group_name = var.rg_name
 }
 output "public_ip_address" {
-    value = "${data.azurerm_public_ip.myterraformpublicip1.ip_address}"
+    value = "${data.azurerm_public_ip.public_ip_waf.ip_address}"
 }   
 
 
 
 #create bwaf
-resource "azurerm_virtual_machine" "myterraformbwaf" {
-    name                  = "bwaf_tf_vmbwaf"
+resource "azurerm_virtual_machine" "vm_bwaf" {
+    name                  = "vm_bwaf"
     location              = "eastus"
     plan {
       publisher          = "barracudanetworks"
@@ -193,12 +193,12 @@ resource "azurerm_virtual_machine" "myterraformbwaf" {
       product            = "waf"
     }
     
-    resource_group_name   = data.azurerm_resource_group.myterraformgroup.name
-    network_interface_ids = [azurerm_network_interface.myterraformnic1.id]
+    resource_group_name   = data.azurerm_resource_group.group_playground.name
+    network_interface_ids = [azurerm_network_interface.nic_bwaf.id]
     vm_size               = "Standard_DS1_v2"
 
     storage_os_disk {
-        name              = "bwaf_tf_osdisk"
+        name              = "osdisk_bwaf"
         caching           = "ReadWrite"
         create_option     = "FromImage"
         managed_disk_type = "Premium_LRS"
@@ -212,7 +212,7 @@ resource "azurerm_virtual_machine" "myterraformbwaf" {
     }
 	
     os_profile {
-        computer_name  = "bwaf-tf-vmbwaf"
+        computer_name  = "vm-bwaf"
         admin_username = "not_used"
         admin_password = "Hello123456!"
         custom_data = "{\"signature\": \"WaaS_Support\", \"email\": \"WaaS_Support@barracuda.com\", \"organization\": \"Barracuda Networks, Inc.\"}"
@@ -225,23 +225,19 @@ resource "azurerm_virtual_machine" "myterraformbwaf" {
     tags = {
         environment = "Terraform BWAF"
     }
-#    provisioner "local-exec" {
-##       command = "echo ${aws_instance.web.private_ip} >> private_ips.txt"
-#       command = "echo Hello >> helloworld.txt"
-#       command = "curl -v 'http://104.211.59.35:8000/' -H 'Content-Type: application/x-www-form-urlencoded' --data 'name_sign=dddadsfasd&email_sign=itsbrett%40gmail.com&company_sign=None&eula_hash_val=ed4480205f84cde3e6bdce0c987348d1d90de9db&action=save_signed_eula'"
-#    }   
+	
 }
 
 # Create virtual machine
-resource "azurerm_virtual_machine" "myterraformvm" {
-    name                  = "bwaf_tf_vmubunutu"
+resource "azurerm_virtual_machine" "vm_ubuntu" {
+    name                  = "vm_ubuntu"
     location              = "eastus"
-    resource_group_name   = data.azurerm_resource_group.myterraformgroup.name
-    network_interface_ids = [azurerm_network_interface.myterraformnic2.id]
+    resource_group_name   = data.azurerm_resource_group.group_playground.name
+    network_interface_ids = [azurerm_network_interface.nic_ubuntu.id]
     vm_size               = "Standard_DS1_v2"
 
     storage_os_disk {
-        name              = "bwaf_tf_osdisk2"
+        name              = "osdisk_ubuntu"
         caching           = "ReadWrite"
         create_option     = "FromImage"
         managed_disk_type = "Premium_LRS"
@@ -255,7 +251,7 @@ resource "azurerm_virtual_machine" "myterraformvm" {
     }
 
     os_profile {
-        computer_name  = "bwaf-tf-vmubuntu"
+        computer_name  = "vm_ubuntu"
         admin_username = "azureuser"
     }
 
@@ -269,18 +265,11 @@ resource "azurerm_virtual_machine" "myterraformvm" {
 
     boot_diagnostics {
         enabled = "true"
-        storage_uri = azurerm_storage_account.mystorageaccount.primary_blob_endpoint
+        storage_uri = azurerm_storage_account.storage_account_playground.primary_blob_endpoint
     }
 
     tags = {
         environment = "Terraform BWAF"
     }
-#    provisioner "local-exec" {
-##       command = "echo ${aws_instance.web.private_ip} >> private_ips.txt"
-#       command = "echo Hello >> helloworld.txt"
-#       command = "curl -v 'http://104.211.59.35:8000/' -H 'Content-Type: application/x-www-form-urlencoded' --data 'name_sign=dddadsfasd&email_sign=itsbrett%40gmail.com&company_sign=None&eula_hash_val=ed4480205f84cde3e6bdce0c987348d1d90de9db&action=save_signed_eula'"
-       #command = "ping 8.8.8.8"
-       #command = "sleep 120; ping '${azurerm_virtual_machine.myterraformvm.public_ip}'"
-#    }
 
 }
