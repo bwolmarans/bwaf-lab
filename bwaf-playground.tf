@@ -4,10 +4,23 @@ variable "rg_name" {
   description = "Enter the resource group to create resources in. For SEs at Barracuda Networks, this is typically Firstname_Lastname (e.g. John_Smith) "
 }
 
-# Import the existing resource group so we can create resources in it
-data "azurerm_resource_group" "group_playground" {
+# If you have an existing group, uncomment this section
+#ImportImport the existing resource group so we can create resources in it
+#data "azurerm_resource_group" "group_playground" {
+#    name     = var.rg_name
+#}
+
+#if you want a new resource group, you need this section
+# Create a resource group if it doesn’t exist
+resource "azurerm_resource_group" "myterraformgroup" {
     name     = var.rg_name
+    location = "eastus"
+
+    tags = {
+        environment = "Terraform Demo"
+    }
 }
+
 
 # Create virtual network
 resource "azurerm_virtual_network" "vnet_playground" {
