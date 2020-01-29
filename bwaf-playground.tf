@@ -4,30 +4,17 @@ variable "rg_name" {
   description = "Enter the resource group to create resources in. For SEs at Barracuda Networks, this is typically Firstname_Lastname (e.g. John_Smith) "
 }
 
-# If you have an existing group, uncomment this section
 #ImportImport the existing resource group so we can create resources in it
-#data "azurerm_resource_group" "group_playground" {
-#    name     = var.rg_name
-#}
-
-#if you want a new resource group, you need this section
-# Create a resource group if it doesn’t exist
-resource "azurerm_resource_group" "myterraformgroup" {
+data "azurerm_resource_group" "rg_playground" {
     name     = var.rg_name
-    location = "eastus"
-
-    tags = {
-        environment = "Terraform Demo"
-    }
 }
 
-
 # Create virtual network
-resource "azurerm_virtual_network" "vnet_playground" {
-    name                = "vnet_playground"
+resource "azurerm_virtual_network" "network_playground" {
+    name                = "network_playground"
     address_space       = ["10.0.0.0/16"]
     location            = "eastus"
-    resource_group_name = data.azurerm_resource_group.group_playground.name
+    resource_group_name = azurerm_resource_group.rg_playground.name
 
     tags = {
         environment = "Terraform BWAF"
@@ -37,8 +24,8 @@ resource "azurerm_virtual_network" "vnet_playground" {
 # Create subnet
 resource "azurerm_subnet" "subnet_playground" {
     name                 = "subnet_playground"
-    resource_group_name  = data.azurerm_resource_group.group_playground.name
-    virtual_network_name = azurerm_virtual_network.vnet_playground.name
+    resource_group_name  = azurerm_resource_group.rg_playground.name
+    virtual_network_name = azurerm_virtual_network.network_playground.name
     address_prefix       = "10.0.1.0/24"
 }
 
@@ -46,7 +33,7 @@ resource "azurerm_subnet" "subnet_playground" {
 resource "azurerm_public_ip" "public_ip_ubuntu" {
     name                         = "public_ip_ubuntu"
     location                     = "eastus"
-    resource_group_name          = data.azurerm_resource_group.group_playground.name
+    resource_group_name          = azurerm_resource_group.rg_playground.name
     allocation_method            = "Dynamic"
 
     tags = {
@@ -54,10 +41,10 @@ resource "azurerm_public_ip" "public_ip_ubuntu" {
     }
 }
 
-resource "azurerm_public_ip" "public_ip_waf" {
-    name                         = "public_ip_waf"
+resource "azurerm_public_ip" "public_ip_bwaf" {
+    name                         = "public_ip_bwaf"
     location                     = "eastus"
-    resource_group_name          = data.azurerm_resource_group.group_playground.name
+    resource_group_name          = azurerm_resource_group.rg_playground.name
     allocation_method            = "Dynamic"
 
     tags = {
@@ -69,7 +56,7 @@ resource "azurerm_public_ip" "public_ip_waf" {
 resource "azurerm_network_security_group" "nsg_playground" {
     name                = "nsg_playground"
     location            = "eastus"
-    resource_group_name = data.azurerm_resource_group.group_playground.name
+    resource_group_name = azurerm_resource_group.rg_playground.name
     
     security_rule {
         name                       = "SSH"
@@ -129,14 +116,14 @@ resource "azurerm_network_security_group" "nsg_playground" {
 resource "azurerm_network_interface" "nic_bwaf" {
     name                      = "nic_bwaf"
     location                  = "eastus"
-    resource_group_name       = data.azurerm_resource_group.group_playground.name
+    resource_group_name       = azurerm_resource_group.rg_playground.name
     network_security_group_id = azurerm_network_security_group.nsg_playground.id
 
     ip_configuration {
         name                          = "nic_cfg_bwaf"
         subnet_id                     = azurerm_subnet.subnet_playground.id
         private_ip_address_allocation = "Dynamic"
-        public_ip_address_id          = azurerm_public_ip.public_ip_waf.id
+        public_ip_address_id          = azurerm_public_ip.public_ip_bwaf.id
     }
 
     tags = {
@@ -148,7 +135,7 @@ resource "azurerm_network_interface" "nic_bwaf" {
 resource "azurerm_network_interface" "nic_ubuntu" {
     name                      = "nic_ubuntu"
     location                  = "eastus"
-    resource_group_name       = data.azurerm_resource_group.group_playground.name
+    resource_group_name       = azurerm_resource_group.rg_playground.name
     network_security_group_id = azurerm_network_security_group.nsg_playground.id
 
     ip_configuration {
@@ -167,16 +154,16 @@ resource "azurerm_network_interface" "nic_ubuntu" {
 resource "random_id" "randomId" {
     keepers = {
         # Generate a new ID only when a new resource group is defined
-        resource_group = data.azurerm_resource_group.group_playground.name
+        resource_group = azurerm_resource_group.rg_playground.name
     }
     
     byte_length = 8
 }
 
 # Create storage account for boot diagnostics
-resource "azurerm_storage_account" "storage_account_playground" {
+resource "azurerm_storage_account" "sa_ubuntu" {
     name                        = "diag${random_id.randomId.hex}"
-    resource_group_name         = data.azurerm_resource_group.group_playground.name
+    resource_group_name         = azurerm_resource_group.rg_playground.name
     location                    = "eastus"
     account_tier                = "Standard"
     account_replication_type    = "LRS"
@@ -186,12 +173,12 @@ resource "azurerm_storage_account" "storage_account_playground" {
     }
 }
 
-data "azurerm_public_ip" "public_ip_waf" {
-    name                = "${azurerm_public_ip.public_ip_waf.name}"
+data "azurerm_public_ip" "public_ip_bwaf" {
+    name                = "${azurerm_public_ip.public_ip_bwaf.name}"
     resource_group_name = var.rg_name
 }
 output "public_ip_address" {
-    value = "${data.azurerm_public_ip.public_ip_waf.ip_address}"
+    value = "${data.azurerm_public_ip.public_ip_bwaf.ip_address}"
 }   
 
 
@@ -206,7 +193,7 @@ resource "azurerm_virtual_machine" "vm_bwaf" {
       product            = "waf"
     }
     
-    resource_group_name   = data.azurerm_resource_group.group_playground.name
+    resource_group_name   = azurerm_resource_group.rg_playground.name
     network_interface_ids = [azurerm_network_interface.nic_bwaf.id]
     vm_size               = "Standard_DS1_v2"
 
@@ -238,14 +225,14 @@ resource "azurerm_virtual_machine" "vm_bwaf" {
     tags = {
         environment = "Terraform BWAF"
     }
-	
+  
 }
 
 # Create virtual machine
 resource "azurerm_virtual_machine" "vm_ubuntu" {
     name                  = "vm_ubuntu"
     location              = "eastus"
-    resource_group_name   = data.azurerm_resource_group.group_playground.name
+    resource_group_name   = azurerm_resource_group.rg_playground.name
     network_interface_ids = [azurerm_network_interface.nic_ubuntu.id]
     vm_size               = "Standard_DS1_v2"
 
@@ -264,7 +251,7 @@ resource "azurerm_virtual_machine" "vm_ubuntu" {
     }
 
     os_profile {
-        computer_name  = "vm_ubuntu"
+        computer_name  = "vm-ubuntu"
         admin_username = "azureuser"
     }
 
@@ -278,7 +265,7 @@ resource "azurerm_virtual_machine" "vm_ubuntu" {
 
     boot_diagnostics {
         enabled = "true"
-        storage_uri = azurerm_storage_account.storage_account_playground.primary_blob_endpoint
+        storage_uri = azurerm_storage_account.sa_ubuntu.primary_blob_endpoint
     }
 
     tags = {
