@@ -1,4 +1,33 @@
-- hosts: all
+- hosts: vm_ubuntu*
+
+  tasks:
+    - name: housekeeping
+      set_fact:
+        vm_ubuntu_private_ip="{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
+#"
+    - debug: var=hostvars[inventory_hostname]['ansible_default_ipv4']['address']
+    - debug: var=vm_ubuntu_private_ip
+    - name: "Save private ip to dummy host"
+      add_host:
+       name:   "dummy_host"
+       ip:  "{{ vm_ubuntu_private_ip }}"
+   
+    - name: update
+      command: apt-get update
+      ignore_errors: yes
+      become: yes
+ 
+    - name: install docker
+      command: apt-get --yes --force-yes install docker.io
+      ignore_errors: yes
+      become: yes
+
+    - name: run dvwa in docker container
+      command: docker run -d --rm -it -p 8080:80 vulnerables/web-dvwa
+      ignore_errors: yes
+      become: yes
+
+- hosts: vm_bwaf*
   connection: local
 
 #  vars_prompt:
@@ -22,28 +51,16 @@
     username: "admin"
     password: "Hello123456!"
     bwafport: '8000'
-    api_url: 'http://{{hostname}}:{{bwafport}}/restapi'
     api_version: 'v3.1'
-
-  tasks:
-
-    - name: blah
-      set_fact:
-        private_ip: "{{private_ipv4_addresses | join }}"
-        hostname: "{{ public_ipv4_addresses | join  }}:8000"
-    - debug: var=private_ip
-    - debug: var=hostname
-
-    - name: Extract the last octet, increment it and store it
-      set_fact: 
-       octet: "{{private_ip.split('.')[3] | int + 1 }}"
-    - debug: var=octet
-    
-    - name: Append the incremented octet to the first 3 octets
-      set_fact: new_ip="{{ private_ip | regex_replace('(^.*\.).*$', '\\1') }}{{octet}}"
-    - debug: var=new_ip
+    vm_bwaf_private_ip: "{{private_ipv4_addresses | join }}"
+    vm_bwaf_public_ip: "{{ public_ipv4_addresses | join }}"
+    vm_ubuntu_private_ip: "{{ hostvars['dummy_host']['ip'] }}"
+    api_url: "http://{{ vm_bwaf_public_ip }}:8000/restapi/{{ api_version }}"
 #"
 
+#
+# Leaving this in as an example, not necessary as can be injected in 
+#
 #    - name: accept bwaf payg license agreement
 #      uri:
 #        url: 'http://{{hostname}}'
@@ -55,9 +72,20 @@
 #    - pause:
 #        minutes: 2
 
+
+  tasks:
+    
+    - name: debuggingstuff
+      debug: 
+        msg: |
+         {{ vm_bwaf_private_ip }}
+         {{ vm_bwaf_public_ip }}
+         {{ api_url }}
+         {{ vm_ubuntu_private_ip }}
+
     - name: login to waf api
       uri:
-        url: 'http://{{hostname }}/restapi/{{ api_version }}/login'
+        url: '{{ api_url }}/login'
         body: {"username":"{{ username }}","password":"{{ password }}"}
         method: POST
         body_format: json
@@ -67,7 +95,7 @@
 
     - name: add a frontend service
       uri:
-        url: 'http://{{ hostname }}/restapi/{{ api_version }}/services/'
+        url: '{{ api_url }}/services/'
         method: POST
         headers:
           Content-type: application/json
@@ -75,13 +103,14 @@
         force_basic_auth: yes
         user: '{{mytoken.json.token}}'
         body_format: json
-        body: { "address-version": "IPv4", "app-id": "dvwa_app_id", "ip-address": "{{ private_ip }}", "name": "dvwa_service", "port": 80, "status": "On", "type": "HTTP"}
+        body: { "address-version": "IPv4", "app-id": "dvwa_app_id", "ip-address": "{{ vm_bwaf_private_ip }}", "name": "dvwa_service", "port": 80, "status": "On", "type": "HTTP"}
         status_code: 201
       delegate_to: localhost
+      ignore_errors: yes
 
     - name: add a backend server 
       uri:
-        url: 'http://{{ hostname }}/restapi/{{ api_version }}/services/dvwa_service/servers'
+        url: '{{ api_url }}/services/dvwa_service/servers'
         method: POST
         headers:
           Content-type: application/json
@@ -89,12 +118,13 @@
         force_basic_auth: yes
         user: '{{mytoken.json.token}}'
         body_format: json
-        body: { "address-version": "IPv4", "ip-address": "{{ new_ip }}", "port": 8080, "status": "In Service", "identifier": "IP Address", "name": "dvwa-server", "hostname": "dvwa-server"}
+        body: { "address-version": "IPv4", "ip-address": "{{ vm_ubuntu_private_ip }}", "port": 8080, "status": "In Service", "identifier": "IP Address", "name": "dvwa-server", "hostname": "dvwa-server"}
         status_code: 201
+      ignore_errors: yes
 
     - name: get all services
       uri:
-        url: 'http://{{ hostname }}/restapi/{{ api_version }}/services/'
+        url: '{{ api_url }}/services/'
         method: GET
         headers:
           Content-type: application/json
@@ -108,7 +138,7 @@
 
     - name: get service port
       uri:
-        url: "http://{{ hostname }}/restapi/{{ api_version }}/services/dvwa_service?groups=Service&parameters=port"
+        url: "{{ api_url }}/services/dvwa_service?groups=Service&parameters=port"
         method: GET
         headers:
           Content-type: application/json
@@ -122,7 +152,7 @@
 
     - name: change service port to 999
       uri:
-        url: "http://{{ hostname }}/restapi/{{ api_version }}/services/dvwa_service"
+        url: "{{ api_url }}/services/dvwa_service"
         headers:
           Content-type: application/json
           Accept: application/json
@@ -138,7 +168,7 @@
 
     - name: get service port
       uri:
-        url: "http://{{ hostname }}/restapi/{{ api_version }}/services/dvwa_service?groups=Service&parameters=port"
+        url: "{{ api_url }}/services/dvwa_service?groups=Service&parameters=port"
         method: GET
         headers:
           Content-type: application/json
@@ -151,7 +181,7 @@
 
     - name: change service port to 80
       uri:
-        url: "http://{{ hostname }}/restapi/{{ api_version }}/services/dvwa_service"
+        url: "{{ api_url }}/services/dvwa_service"
         headers:
           Content-type: application/json
           Accept: application/json
@@ -167,7 +197,7 @@
 
     - name: get service port
       uri:
-        url: "http://{{ hostname }}/restapi/{{ api_version }}/services/dvwa_service?groups=Service&parameters=port"
+        url: "{{ api_url }}/services/dvwa_service?groups=Service&parameters=port"
         method: GET
         headers:
           Content-type: application/json
