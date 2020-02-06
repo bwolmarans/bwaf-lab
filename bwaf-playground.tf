@@ -1,12 +1,24 @@
-# Create a resource group if it doesn’t exist
+# Configure the Azure Provider
+provider "azurerm" {
+  # whilst the `version` attribute is optional, we recommend pinning to a given version of the Provider
+  version = "=1.38.0"
+}
+
+# Gather resource group name
 variable "rg_name" {
   type        = string
   description = "Enter the resource group to create resources in. For SEs at Barracuda Networks, this is typically Firstname_Lastname (e.g. John_Smith) "
 }
 
-#ImportImport the existing resource group so we can create resources in it
-data "azurerm_resource_group" "rg_playground" {
+
+# Create the resource group
+resource "azurerm_resource_group" "rg_playground" {
     name     = var.rg_name
+    location = "eastus"
+
+    tags = {
+        environment = "Terraform BWAF"
+    }
 }
 
 # Create virtual network
@@ -273,3 +285,4 @@ resource "azurerm_virtual_machine" "vm_ubuntu" {
     }
 
 }
+
