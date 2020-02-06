@@ -17,9 +17,22 @@
 ** Ansible 2.9.2+  
   
 * Optional: PC/Mac that can run Postman  
+
+### Want to get something running quick, without really learning anything? Here's the short version ###
+* az vm image accept-terms --urn barracudanetworks:waf:hourly:latest  
+* git clone https://github.com/bwolmarans/bwaf-lab.git  
+* cd bwaf-lab  
+* ssh-keygen -m PEM -t rsa -b 2048 ( be careful about SSH keys don't over-write )  
+* terraform init
+* terraform apply
+* Edit myazure_rm.yaml, change the string change_me to your unique ID.
+* ansible-playbook -i ./myazure_rm.yml ./bwaf-playbook.yaml --limit vm_bwaf*
+* ansible-playbook -i ./myazure_rm.yml ./bwaf-dvwa.yaml --limit vm_ubuntu* --key-file ~/.ssh/id_rsa --u azureuser
+* Find your BWAF public IP in the Azure portal  
+* Web browse to your BWAF http://<bwaf public ip>:8000, login admin/Hello123456! and verify in the WAF configuration look good  
+* Browse to the DVWA protected service http://<bwaf public ip>:80
   
-### Instructions: ###
-  
+### Full Instructions if you want to Learn Something Properly ###
 * az vm image accept-terms --urn barracudanetworks:waf:hourly:latest  
 * git clone https://github.com/bwolmarans/bwaf-lab.git  
 * cd bwaf-lab  
