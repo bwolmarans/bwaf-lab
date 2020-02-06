@@ -1,5 +1,7 @@
 plugin: azure_rm
 include_vm_resource_groups:
+# You must change "change_me" below to your Azure resource group.  
+# There doesn't seem to be a way to pass this in on the command line.
 - change_me
 auth_source: auto
 
