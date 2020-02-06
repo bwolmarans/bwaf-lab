@@ -26,8 +26,7 @@
 * terraform init
 * terraform apply
 * Edit myazure_rm.yaml, change the string change_me to your unique ID.
-* ansible-playbook -i ./myazure_rm.yml ./bwaf-playbook.yaml --limit vm_bwaf*
-* ansible-playbook -i ./myazure_rm.yml ./bwaf-dvwa.yaml --limit vm_ubuntu* --key-file ~/.ssh/id_rsa --u azureuser
+* ansible-playbook -i ./myazure_rm.yml ./bwaf-playbook.yaml --key-file ~/.ssh/id_rsa --u azureuser
 * Find your BWAF public IP in the Azure portal  
 * Web browse to your BWAF http://<bwaf public ip>:8000, login admin/Hello123456! and verify in the WAF configuration look good  
 * Browse to the DVWA protected service http://<bwaf public ip>:80
@@ -53,12 +52,11 @@
 * manually test. then delete server and service.
 * examine the ansible playbook
 * Edit myazure_rm.yaml, change the string change_me to your unique ID.  
-* ansible-playbook -i ./myazure_rm.yml ./bwaf-playbook.yaml --limit bwaf_tf_vmbwaf*  
-* ansible-playbook -i ./myazure_rm.yml ./bwaf-dvwa.yaml --limit bwaf_tf_vmub* --key-file ~/.ssh/id_rsa --u azureuser  
+* ansible-playbook -i ./myazure_rm.yml ./bwaf-playbook.yaml --key-file ~/.ssh/id_rsa --u azureuser
 * Find your BWAF public IP in the Azure portal  
 * Use your web browser, browse to the BWAF, login, and verify in the BWAF GUI the WAF configuration look good  
 * How did you know what password to use?  
-* Verify that you can access the DVWA app by browsing to the Ubuntu box public IP address, port 8080, like this http://<Ubuntu public ip>:8080  
+* Verify access to the DVWA app by browsing to the Ubuntu public IP, port 8080, i.e. http://<Ubuntu public ip>:8080  
 * Login as user admin, password is password  
 * Click “Create / Reset Database”  
 * Click login at the very bottom of the screen  
