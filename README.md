@@ -18,14 +18,14 @@
   
 * Optional: PC/Mac that can run Postman  
 
-### Want to get something running quick, without really learning anything? Here's the short version ###
+### Want something running quick, without learning anything? Here's the short version ###
 * az vm image accept-terms --urn barracudanetworks:waf:hourly:latest  
 * git clone https://github.com/bwolmarans/bwaf-lab.git  
 * cd bwaf-lab  
-* ssh-keygen -m PEM -t rsa -b 2048 ( be careful about SSH keys don't over-write )  
+* ssh-keygen -m PEM -t rsa -b 2048 ( be careful about existing SSH keys don't over-write )  
 * terraform init
 * terraform apply
-* Edit myazure_rm.yaml, change the string change_me to your unique ID.
+* Edit myazure_rm.yaml, change the string change_me to your Azure resource group name
 * ansible-playbook -i ./myazure_rm.yml ./bwaf-playbook.yaml --key-file ~/.ssh/id_rsa --u azureuser
 * Find your BWAF public IP in the Azure portal  
 * Web browse to your BWAF http://<bwaf public ip>:8000, login admin/Hello123456! and verify in the WAF configuration look good  
@@ -51,7 +51,7 @@
 * docker run -d --rm -it -p 8080:80 vulnerables/web-dvwa
 * manually test. then delete server and service.
 * examine the ansible playbook
-* Edit myazure_rm.yaml, change the string change_me to your unique ID.  
+* Edit myazure_rm.yaml, change the string change_me to your Azure resource group name  
 * ansible-playbook -i ./myazure_rm.yml ./bwaf-playbook.yaml --key-file ~/.ssh/id_rsa --u azureuser
 * Find your BWAF public IP in the Azure portal  
 * Use your web browser, browse to the BWAF, login, and verify in the BWAF GUI the WAF configuration look good  
