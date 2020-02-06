@@ -35,7 +35,7 @@
 * az vm image accept-terms --urn barracudanetworks:waf:hourly:latest  
 * git clone https://github.com/bwolmarans/bwaf-lab.git  
 * cd bwaf-lab  
-* ssh-keygen -m PEM -t rsa -b 2048 ( be careful about SSH keys don't over-write )  
+* ssh-keygen -m PEM -t rsa -b 2048 ( be careful about existing SSH keys don't over-write )  
 * terraform init  
 * examine the terraform configuration file
 * terraform plan ( You need a unique ID for the Resource Group. Enter your first name + your phone number when asked. For example, my name is Brett and my phone number is (818) 292-7981, so I will enter brett8182925555 )  
