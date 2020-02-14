@@ -13,7 +13,7 @@ variable "rg_name" {
 # Gather location
 variable "rg_location" {
   type        = string
-  description = "Enter your locationi (e.g. eastus) "
+  description = "Enter your location (e.g. eastus) "
 }
 
 
