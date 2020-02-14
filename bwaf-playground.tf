@@ -10,11 +10,17 @@ variable "rg_name" {
   description = "Enter the resource group to create resources in. For SEs at Barracuda Networks, this is typically Firstname_Lastname (e.g. John_Smith) "
 }
 
+# Gather location
+variable "rg_location" {
+  type        = string
+  description = "Enter your locationi (e.g. eastus) "
+}
+
 
 # Create the resource group
 resource "azurerm_resource_group" "rg_playground" {
     name     = var.rg_name
-    location = "eastus"
+    location = var.rg_location
 
     tags = {
         environment = "Terraform BWAF"
