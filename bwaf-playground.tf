@@ -214,6 +214,9 @@ resource "azurerm_virtual_machine" "vm_bwaf" {
     resource_group_name   = azurerm_resource_group.rg_playground.name
     network_interface_ids = [azurerm_network_interface.nic_bwaf.id]
     vm_size               = "Standard_DS1_v2"
+	
+    delete_os_disk_on_termination = true
+    delete_data_disks_on_termination = true
 
     storage_os_disk {
         name              = "osdisk_bwaf"
@@ -253,6 +256,9 @@ resource "azurerm_virtual_machine" "vm_ubuntu" {
     resource_group_name   = azurerm_resource_group.rg_playground.name
     network_interface_ids = [azurerm_network_interface.nic_ubuntu.id]
     vm_size               = "Standard_DS1_v2"
+
+    delete_os_disk_on_termination = true
+    delete_data_disks_on_termination = true
 
     storage_os_disk {
         name              = "osdisk_ubuntu"
