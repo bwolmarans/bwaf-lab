@@ -2,9 +2,30 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "vmName": {
+        "saName": {
             "type": "string",
-            "defaultValue": "sko_bwaf",
+            "defaultValue": "sasko",
+            "metadata": {
+                "description": "The name of your Storage Account."
+            }
+        }, 
+		"saKey": {
+            "type": "string",
+            "defaultValue": "changeme",
+            "metadata": {
+                "description": "The name of your SA Key."
+            }
+        },
+        "saContainer": {
+            "type": "string",
+            "defaultValue": "licensecontainer",
+            "metadata": {
+                "description": "The name of your Container.  The BLOB names is hardcoded to barracuda-byol-license-list.jsons."
+            }
+        },        
+		"vmName": {
+            "type": "string",
+            "defaultValue": "sko-bwaf",
             "metadata": {
                 "description": "The name of your Virtual Machine."
             }
@@ -47,9 +68,9 @@
         "addressPrefix": "10.1.0.0/16",
 	"userData": {
             "vmss_instance": 1,
-            "license_storage_account": "sasko",
-            "license_storage_account_key": "eHQnSkRRIv5VD/KFVhOzfUEXj2U6vSsFpGhRMX+G6YwegzokdpBLbHubAzg+v9LsXS6/ZsNuuXKytGCbkup+JQ==",
-            "license_container_name": "licensecontainer",
+            "license_storage_account": "[parameters('saName')]",
+            "license_storage_account_key": "[parameters('saKey')]",
+            "license_container_name": "[parameters('saContainer')]",
             "default_domain": "escapefromthe.net",
             "signature": "brett",
             "email": "bwolmarans@barracuda.com",
@@ -105,7 +126,7 @@
                             "sourceAddressPrefix": "*",
                             "sourcePortRange": "*",
                             "destinationAddressPrefix": "*",
-                            "destinationPortRange": "22,8443,80,8080,443,8000"
+                            "destinationPortRange": "22,443,8443,80"
                         }
                     }
                 ]
@@ -143,7 +164,7 @@
                 "publicIpAllocationMethod": "Dynamic",
                 "publicIPAddressVersion": "IPv4",
                 "dnsSettings": {
-                    "domainNameLabel": "bwaf-sko"
+                    "domainNameLabel": "bwaf-sko2020"
                 },
                 "idleTimeoutInMinutes": 4
             },
