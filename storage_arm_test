@@ -5,7 +5,7 @@
    {
      "type": "Microsoft.Storage/storageAccounts",
      "apiVersion": "2019-04-01",
-     "name": "sko_sa_test_brett",
+     "name": "skosatestbrett",
      "location": "eastus",
      "sku": {
        "name": "Standard_LRS"
