@@ -5,7 +5,7 @@
 		"rgName": {
 			"type": "string",
 			"defaultValue": "sko2020bwaf",
-			"metadata": {
+			"metadata": { 
 				"description": "The name of your resource group."
 			}
 		},
