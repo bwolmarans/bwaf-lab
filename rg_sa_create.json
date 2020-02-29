@@ -4,7 +4,7 @@
 	"parameters": {
 		"rgName": {
 			"type": "string",
-			"defaultValue": "sko2020bwaf"
+			"defaultValue": "sko202nnnnn0bwaf"
 		},
 		"rgLocation": {
 			"type": "string",
