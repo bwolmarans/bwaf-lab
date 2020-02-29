@@ -8,6 +8,8 @@ az group deployment create --rollback-on-error --parameters '{"saKey": {"value":
 
 # bwaf-lab #
 
+This is the Terraform/Postman/Ansible lab.
+
 ## Diagram: ##
 
 ![Test Image 3](https://github.com/bwolmarans/bwaf-lab/blob/master/rrrr.png)
