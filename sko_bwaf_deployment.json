@@ -9,7 +9,7 @@
                 "description": "The name of your Storage Account."
             }
         }, 
-		"saKey": {
+	"saKey": {
             "type": "string",
             "defaultValue": "changeme",
             "metadata": {
@@ -23,7 +23,7 @@
                 "description": "The name of your Container.  The BLOB names is hardcoded to barracuda-byol-license-list.jsons."
             }
         },        
-		"vmName": {
+	"vmName": {
             "type": "string",
             "defaultValue": "sko-bwaf",
             "metadata": {
@@ -66,7 +66,7 @@
         "osDiskType": "Standard_LRS",
         "subnetAddressPrefix": "10.1.0.0/24",
         "addressPrefix": "10.1.0.0/16",
-	"userData": {
+		"userData": {
             "vmss_instance": 1,
             "license_storage_account": "[parameters('saName')]",
             "license_storage_account_key": "[parameters('saKey')]",
@@ -76,9 +76,22 @@
             "email": "bwolmarans@barracuda.com",
             "organization": "cudacudacuda"
         },
-	"customData": "[string(variables('userData'))]"
+		"customData": "[string(variables('userData'))]"
     },
     "resources": [
+		{
+			"type": "Microsoft.Storage/storageAccounts",
+			"apiVersion": "2019-04-01",
+			"name": "[parameters('saName')]",
+			"location": "eastus",
+			"sku": {
+				"name": "Standard_LRS"
+			},
+			"kind": "StorageV2",
+			"properties": {
+				"supportsHttpsTrafficOnly": true
+			}
+		},
         {
             "type": "Microsoft.Network/networkInterfaces",
             "apiVersion": "2018-10-01",
