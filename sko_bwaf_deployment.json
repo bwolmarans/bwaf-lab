@@ -17,6 +17,7 @@
 			}
 		}
 	},
+	"variables": {},
 	"resources": [{
 			"type": "Microsoft.Resources/resourceGroups",
 			"apiVersion": "2018-05-01",
@@ -27,7 +28,7 @@
 		{
 			"type": "Microsoft.Resources/deployments",
 			"apiVersion": "2018-05-01",
-			"name": "sko2020bwafdeployment",
+			"name": "storageDeployment",
 			"resourceGroup": "[parameters('rgName')]",
 			"dependsOn": [
 				"[resourceId('Microsoft.Resources/resourceGroups/', parameters('rgName'))]"
@@ -184,5 +185,6 @@
 				}
 			}
 		}
-	]
+	],
+	"outputs": {}
 }
