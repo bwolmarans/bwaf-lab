@@ -1,3 +1,11 @@
+# bwaf-byol-autolicense
+These are the steps to use ARM templates hosted in this repo to create a resouce group, and then create a BWAF BYOL instance which automatically grabs a license from a license blob.
+
+az deployment create --template-uri https://raw.githubusercontent.com/bwolmarans/bwaf-lab/master/rg_sa_create.json  -l eastus
+
+az group deployment create --rollback-on-error --parameters '{"saKey": {"value": "changeme"}}' --resource-group sko2020bwaf --template-uri https://raw.githubusercontent.com/bwolmarans/bwaf-lab/master/sko_bwaf_deployment.json
+
+
 # bwaf-lab #
 
 ## Diagram: ##
