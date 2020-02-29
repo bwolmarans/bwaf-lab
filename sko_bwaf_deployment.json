@@ -4,7 +4,7 @@
     "parameters": {
         "saName": {
             "type": "string",
-            "defaultValue": "sasko",
+            "defaultValue": "sabrett1",
             "metadata": {
                 "description": "The name of your Storage Account."
             }
@@ -18,7 +18,7 @@
         },
         "saContainer": {
             "type": "string",
-            "defaultValue": "licensecontainer",
+            "defaultValue": "licenses",
             "metadata": {
                 "description": "The name of your Container.  The BLOB names is hardcoded to barracuda-byol-license-list.jsons."
             }
