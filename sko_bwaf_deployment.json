@@ -37,7 +37,7 @@
                 "description": "The name of your Container.  The blob with the licenses must exist in the container and the name of the blob is hardcoded in barracuda waf code to be the magic string barracuda-byol-license-list.json."
             }
         },        
-		"vmName": {
+	"vmName": {
             "type": "string",
             "defaultValue": "sko-bwaf",
             "metadata": {
@@ -73,7 +73,7 @@
         "osDiskType": "Standard_LRS",
         "subnetAddressPrefix": "10.1.0.0/24",
         "addressPrefix": "10.1.0.0/16",
-		"userData": {
+	"userData": {
             "vmss_instance": 1,
             "license_storage_account": "[parameters('saName')]",
             "license_storage_account_key": "[parameters('saKey')]",
@@ -83,23 +83,22 @@
             "email": "bwolmarans@barracuda.com",
             "organization": "cudacudacuda"
         },
-		"customData": "[string(variables('userData'))]"
+	"customData": "[string(variables('userData'))]"
     },
     "resources": [
-		{
-		  "type": "Microsoft.Resources/resourceGroups",
-		  "apiVersion": "2018-05-01",
-		  "location": "[parameters('rgLocation')]",
-		  "name": "[parameters('rgName')]",
-		  "properties": {}
-		},
+	{
+	  "type": "Microsoft.Resources/resourceGroups",
+	  "apiVersion": "2018-05-01",
+	  "location": "[parameters('rgLocation')]",
+	  "name": "[parameters('rgName')]",
+	  "properties": {}
+	},
         {
             "type": "Microsoft.Network/networkInterfaces",
             "apiVersion": "2018-10-01",
             "name": "[variables('networkInterfaceName')]",
             "location": "[parameters('rgLocation')]",
             "dependsOn": [
-		"[resourceId('Microsoft.Resources/resourceGroups/', parameters('rgName'))]",
                 "[resourceId('Microsoft.Network/networkSecurityGroups/', parameters('networkSecurityGroupName'))]",
                 "[resourceId('Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName'))]",
                 "[resourceId('Microsoft.Network/publicIpAddresses/', variables('publicIpAddressName'))]"
@@ -129,6 +128,9 @@
             "apiVersion": "2019-02-01",
             "name": "[parameters('networkSecurityGroupName')]",
             "location": "[parameters('rgLocation')]",
+            "dependsOn": [
+		"[resourceId('Microsoft.Resources/resourceGroups/', parameters('rgName'))]"
+	    ],
             "properties": {
                 "securityRules": [
                     {
