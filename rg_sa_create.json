@@ -1,191 +1,63 @@
 {
-	"$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
-	"contentVersion": "1.0.0.0",
-	"parameters": {
-		"rgName": {
-			"type": "string",
-			"defaultValue": "sko2020bwaf",
-			"metadata": {
-				"description": "The name of your resource group."
-			}
-		},
-		"rgLocation": {
-			"type": "string",
-			"defaultValue": "eastus",
-			"metadata": {
-				"description": "The location of your resource group."
-			}
-		}
-	},
-	"variables": {},
-	"resources": [{
-			"type": "Microsoft.Resources/resourceGroups",
-			"apiVersion": "2018-05-01",
-			"location": "[parameters('rgLocation')]",
-			"name": "[parameters('rgName')]",
-			"properties": {}
-		},
-		{
-			"type": "Microsoft.Resources/deployments",
-			"apiVersion": "2018-05-01",
-			"name": "storageDeployment",
-			"resourceGroup": "[parameters('rgName')]",
-			"dependsOn": [
-				"[resourceId('Microsoft.Resources/resourceGroups/', parameters('rgName'))]"
-			],
-			"properties": {
-				"mode": "Incremental",
-				"template": {
-					"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-					"contentVersion": "1.0.0.0",
-					"parameters": {},
-					"variables": {},
-					"resources": [{
-							"type": "Microsoft.Network/networkInterfaces",
-							"apiVersion": "2018-10-01",
-							"name": "[variables('networkInterfaceName')]",
-							"location": "[parameters('rgLocation')]",
-							"dependsOn": [
-							        "[resourceId('Microsoft.Resources/resourceGroups/', parameters('rgName'))]",
-								"[resourceId('Microsoft.Network/networkSecurityGroups/', parameters('networkSecurityGroupName'))]",
-								"[resourceId('Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName'))]",
-								"[resourceId('Microsoft.Network/publicIpAddresses/', variables('publicIpAddressName'))]"
-							],
-							"properties": {
-								"ipConfigurations": [{
-									"name": "ipconfig1",
-									"properties": {
-										"subnet": {
-											"id": "[variables('subnetRef')]"
-										},
-										"privateIPAllocationMethod": "Dynamic",
-										"publicIpAddress": {
-											"id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
-										}
-									}
-								}],
-								"networkSecurityGroup": {
-									"id": "[resourceId('Microsoft.Network/networkSecurityGroups',parameters('networkSecurityGroupName'))]"
-								}
-							}
-						},
-						{
-							"type": "Microsoft.Network/networkSecurityGroups",
-							"apiVersion": "2019-02-01",
-							"name": "[parameters('networkSecurityGroupName')]",
-							"location": "[parameters('rgLocation')]",
-							"dependsOn": [
-								"[resourceId('Microsoft.Resources/resourceGroups/', parameters('rgName'))]"
-							],
-							"properties": {
-								"securityRules": [{
-									"name": "SSH",
-									"properties": {
-										"priority": 1000,
-										"protocol": "TCP",
-										"access": "Allow",
-										"direction": "Inbound",
-										"sourceAddressPrefix": "*",
-										"sourcePortRange": "*",
-										"destinationAddressPrefix": "*",
-										"destinationPortRange": "8443"
-									}
-								}]
-							}
-						},
-						{
-							"type": "Microsoft.Network/virtualNetworks",
-							"apiVersion": "2019-04-01",
-							"name": "[parameters('virtualNetworkName')]",
-							"location": "[parameters('rgLocation')]",
-							"properties": {
-								"addressSpace": {
-									"addressPrefixes": [
-										"[variables('addressPrefix')]"
-									]
-								},
-								"subnets": [{
-									"name": "[parameters('subnetName')]",
-									"properties": {
-										"addressPrefix": "[variables('subnetAddressPrefix')]",
-										"privateEndpointNetworkPolicies": "Enabled",
-										"privateLinkServiceNetworkPolicies": "Enabled"
-									}
-								}]
-							}
-						},
-						{
-							"type": "Microsoft.Network/publicIpAddresses",
-							"apiVersion": "2019-02-01",
-							"name": "[variables('publicIpAddressName')]",
-							"location": "[parameters('rgLocation')]",
-							"properties": {
-								"publicIpAllocationMethod": "Dynamic",
-								"publicIPAddressVersion": "IPv4",
-								"dnsSettings": {
-									"domainNameLabel": "bwaf-sko2020"
-								},
-								"idleTimeoutInMinutes": 4
-							},
-							"sku": {
-								"name": "Basic",
-								"tier": "Regional"
-							}
-						},
-						{
-							"type": "Microsoft.Compute/virtualMachines",
-							"apiVersion": "2019-03-01",
-							"name": "[parameters('vmName')]",
-							"location": "[parameters('rgLocation')]",
-							"plan": {
-								"publisher": "barracudanetworks",
-								"name": "byol",
-								"product": "waf"
-							},
-							"dependsOn": [
-								"[resourceId('Microsoft.Network/networkInterfaces/', variables('networkInterfaceName'))]"
-							],
-							"properties": {
-								"hardwareProfile": {
-									"vmSize": "Standard_DS1_v2"
-								},
-								"storageProfile": {
-									"osDisk": {
-										"createOption": "fromImage",
-										"managedDisk": {
-											"storageAccountType": "Standard_LRS"
-										}
-									},
-									"imageReference": {
-										"publisher": "barracudanetworks",
-										"offer": "waf",
-										"sku": "byol",
-										"version": "latest"
-									}
-								},
-								"networkProfile": {
-									"networkInterfaces": [{
-										"id": "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaceName'))]"
-									}]
-								},
-								"osProfile": {
-									"computerName": "[parameters('vmName')]",
-									"adminUsername": "not_used",
-									"adminPassword": "Hello123456!",
-									"customData": "[base64(variables('customData'))]"
-								}
-							}
-						}
-					],
-					"outputs": {
-						"hostname": {
-							"type": "string",
-							"value": "[reference(variables('publicIPAddressName')).dnsSettings.fqdn]"
-						}
-					}
-				}
-			}
-		}
-	],
-	"outputs": {}
+  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "rgName": {
+      "type": "string",
+      "defaultValue": "sko2020bwaf",
+    },
+    "rgLocation": {
+      "type": "string"
+      "defaultValue": "eastus",
+    },
+    "storagePrefix": {
+      "type": "string",
+      "defaultValue": "sko2020bwaf",
+      "maxLength": 11
+    }
+  },
+  "variables": {
+    "storageName": "[concat(parameters('storagePrefix'), uniqueString(subscription().id, parameters('rgName')))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Resources/resourceGroups",
+      "apiVersion": "2018-05-01",
+      "location": "[parameters('rgLocation')]",
+      "name": "[parameters('rgName')]",
+      "properties": {}
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2018-05-01",
+      "name": "storageDeployment",
+      "resourceGroup": "[parameters('rgName')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/resourceGroups/', parameters('rgName'))]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {},
+          "variables": {},
+          "resources": [
+            {
+              "type": "Microsoft.Storage/storageAccounts",
+              "apiVersion": "2017-10-01",
+              "name": "[variables('storageName')]",
+              "location": "[parameters('rgLocation')]",
+              "sku": {
+                "name": "Standard_LRS"
+              },
+              "kind": "StorageV2",
+            }
+          ],
+          "outputs": {}
+        }
+      }
+    }
+  ],
+  "outputs": {}
 }
