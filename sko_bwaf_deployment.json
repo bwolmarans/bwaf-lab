@@ -181,11 +181,11 @@
 						"adminUsername": "not_used",
 						"adminPassword": "Hello123456!",
 						"customData": "[base64(variables('customData'))]",
-					}
-				}
-			}
+					},
+				},
+			},
 		],
-	}
+	},
     "outputs": {
         "hostname": {
             "type": "string",
