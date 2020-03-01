@@ -7,6 +7,8 @@ az storage account create --name sabwaf --resource-group sko2020bwaf --location 
 
 az storage container create --account-name sabwaf --name contbwaf3 --auth-mode key --account-key changeme
 
+wget from this repo the file named barracuda-byol-license-list.json
+
 az storage blob upload --account-name sabwaf --container-name contbwaf3 --name barracuda-byol-license-list.json --file barracuda-byol-license-list.json --auth-mode key --account-key changeme
 
 az group deployment create --rollback-on-error --parameters '{"saKey": {"value": "changeme"}}' --resource-group sko2020bwaf --template-uri https://raw.githubusercontent.com/bwolmarans/bwaf-lab/master/sko_bwaf_deployment.json
