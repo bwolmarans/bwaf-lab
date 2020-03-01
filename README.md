@@ -1,6 +1,8 @@
 # bwaf-byol-autolicense
 These are the steps to use ARM templates hosted in this repo to create a resouce group, and then create a BWAF BYOL instance which automatically grabs a license from a license blob.
 
+az group create --name sko2020bwaf --location eastus
+
 az storage account create --name sabwaf --resource-group sko2020bwaf --location eastus --sku Standard_ZRS
 
 az storage container create --account-name sabwaf --name contbwaf3 --auth-mode key --account-key changeme
