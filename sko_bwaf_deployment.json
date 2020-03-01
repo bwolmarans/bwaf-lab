@@ -25,7 +25,7 @@
 		},
 		"vmName": {
 			"type": "string",
-			"defaultValue": "sko2020bwaf",
+			"defaultValue": "sko2020BWAF",
 			"metadata": {
 				"description": "The name of your Virtual Machine."
 			}
@@ -39,7 +39,7 @@
 		},
 		"virtualNetworkName": {
 			"type": "string",
-			"defaultValue": "vNet-bwaf",
+			"defaultValue": "vnetBWAF",
 			"metadata": {
 				"description": "Name of the VNET"
 			}
@@ -53,7 +53,7 @@
 		},
 		"networkSecurityGroupName": {
 			"type": "string",
-			"defaultValue": "SecGroupNet",
+			"defaultValue": "secgroupBWAF",
 			"metadata": {
 				"description": "Name of the Network Security Group"
 			}
