@@ -4,7 +4,7 @@
 	"parameters": {
 		"saName": {
 			"type": "string",
-			"defaultValue": "salicenset",
+			"defaultValue": "salicense",
 			"metadata": {
 				"description": "The name of your Storage Account."
 			}
