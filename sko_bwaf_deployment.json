@@ -112,7 +112,8 @@
 			"name": "[parameters('networkSecurityGroupName')]",
 			"location": "[parameters('location')]",
 			"properties": {
-				"securityRules": [{
+				"securityRules": [
+					{
 					"name": "S8K",
 					"properties": {
 						"priority": 1000,
@@ -123,7 +124,9 @@
 						"sourcePortRange": "*",
 						"destinationAddressPrefix": "*",
 						"destinationPortRange": "8443"
+					        }
 					},
+					{
 					"name": "8K",
 					"properties": {
 						"priority": 1010,
@@ -134,7 +137,9 @@
 						"sourcePortRange": "*",
 						"destinationAddressPrefix": "*",
 						"destinationPortRange": "8000"
+						}
 					},
+					{
 					"name": "eighty",
 					"properties": {
 						"priority": 1020,
@@ -145,7 +150,9 @@
 						"sourcePortRange": "*",
 						"destinationAddressPrefix": "*",
 						"destinationPortRange": "80"
+						}
 					},
+					{
 					"name": "SSL",
 					"properties": {
 						"priority": 1030,
@@ -156,8 +163,9 @@
 						"sourcePortRange": "*",
 						"destinationAddressPrefix": "*",
 						"destinationPortRange": "443"
+						}
 					}
-				}]
+				]
 			}
 		},
 		{
