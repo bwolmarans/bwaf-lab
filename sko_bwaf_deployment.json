@@ -113,7 +113,7 @@
 			"location": "[parameters('location')]",
 			"properties": {
 				"securityRules": [{
-					"name": "SSH",
+					"name": "S8K",
 					"properties": {
 						"priority": 1000,
 						"protocol": "TCP",
@@ -123,6 +123,39 @@
 						"sourcePortRange": "*",
 						"destinationAddressPrefix": "*",
 						"destinationPortRange": "8443"
+					},
+					"name": "8K",
+					"properties": {
+						"priority": 1010,
+						"protocol": "TCP",
+						"access": "Allow",
+						"direction": "Inbound",
+						"sourceAddressPrefix": "*",
+						"sourcePortRange": "*",
+						"destinationAddressPrefix": "*",
+						"destinationPortRange": "8000"
+					},
+					"name": "eighty",
+					"properties": {
+						"priority": 1020,
+						"protocol": "TCP",
+						"access": "Allow",
+						"direction": "Inbound",
+						"sourceAddressPrefix": "*",
+						"sourcePortRange": "*",
+						"destinationAddressPrefix": "*",
+						"destinationPortRange": "80"
+					},
+					"name": "SSL",
+					"properties": {
+						"priority": 1030,
+						"protocol": "TCP",
+						"access": "Allow",
+						"direction": "Inbound",
+						"sourceAddressPrefix": "*",
+						"sourcePortRange": "*",
+						"destinationAddressPrefix": "*",
+						"destinationPortRange": "443"
 					}
 				}]
 			}
