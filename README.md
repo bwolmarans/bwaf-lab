@@ -43,7 +43,7 @@ This is the Terraform/Postman/Ansible lab.
 * Optional: PC/Mac that can run Postman  
 
 ### Want something running quick, without learning anything? Here's the short version ###
-* az vm image accept-terms --urn barracudanetworks:waf:hourly:latest  
+* az vm image terms accept --urn barracudanetworks:waf:hourly:latest  
 * git clone https://github.com/bwolmarans/bwaf-lab.git  
 * cd bwaf-lab  
 * ssh-keygen -m PEM -t rsa -b 2048 ( be careful about existing SSH keys don't over-write )  
