@@ -27,9 +27,10 @@ In the Azure gui, after a minute so, click on the storage account, on the left m
 
 az storage blob upload --account-name sabwaf --container-name contbwaf3 --name barracuda-byol-license-list.json --file barracuda-byol-license-list.json --auth-mode key --account-key <right click, paste, put your azure storage account key here>
 
-Now actually create the BWAF virtual machine and everything it needs to work. It will automatically get a BYOL license from the file uploaded.  
+Now actually create the BWAF virtual machine and everything it needs to work. It will automatically get a BYOL license from the file uploaded.  You must please change the string changeme to be your azure storage account key. Just use copy and paste to get the job done!
 
 Unless you are the SE creating the storage account, you can just start with this command and skip the others:
+
 
 az group deployment create --rollback-on-error --parameters '{"saKey": {"value": "changeme"}}' --resource-group sko2020bwaf --template-uri https://raw.githubusercontent.com/bwolmarans/bwaf-lab/master/sko_bwaf_deployment.json
 
