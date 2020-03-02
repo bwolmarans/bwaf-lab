@@ -1,15 +1,21 @@
 # bwaf-byol-autolicense
 These are the steps to use ARM templates hosted in this repo to create a resouce group, and then create a BWAF BYOL instance which automatically grabs a license from a license blob.
 
+go to the azure portal.
+
+open the azure shell.
+
 az group create --name sko2020bwaf --location eastus
 
 az storage account create --name sabwaf --resource-group sko2020bwaf --location eastus --sku Standard_ZRS
 
 az storage container create --account-name sabwaf --name contbwaf3 --auth-mode key --account-key changeme
 
-wget from this repo the file named barracuda-byol-license-list.json
+( now in Azure gui, click on the storage account, on the left menu is "keys", copy the first key )
 
-az storage blob upload --account-name sabwaf --container-name contbwaf3 --name barracuda-byol-license-list.json --file barracuda-byol-license-list.json --auth-mode key --account-key changeme
+wget from this repo the file named barracuda-byol-license-list.json 
+
+az storage blob upload --account-name sabwaf --container-name contbwaf3 --name barracuda-byol-license-list.json --file barracuda-byol-license-list.json --auth-mode key --account-key <right click, paste, put your azure storage account key here>
 
 az group deployment create --rollback-on-error --parameters '{"saKey": {"value": "changeme"}}' --resource-group sko2020bwaf --template-uri https://raw.githubusercontent.com/bwolmarans/bwaf-lab/master/sko_bwaf_deployment.json
 
