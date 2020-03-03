@@ -32,7 +32,7 @@ Now actually create the BWAF virtual machine and everything it needs to work. It
 Unless you are the SE creating the storage account, you can just start with this command and skip the others:
 
 
-az group deployment create --rollback-on-error --parameters '{"saKey": {"value": "changeme"}}' --resource-group sko2020bwaf --template-uri https://raw.githubusercontent.com/bwolmarans/bwaf-lab/master/sko_bwaf_deployment.json
+az group deployment create --parameters '{"saKey": {"value": "changeme"}}' --resource-group sko2020bwaf --template-uri https://raw.githubusercontent.com/bwolmarans/bwaf-lab/master/sko_bwaf_deployment.json
 
 
 # bwaf-lab #
