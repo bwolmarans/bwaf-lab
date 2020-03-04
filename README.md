@@ -15,7 +15,7 @@ Create a storage account.
 
 In the Azure gui, after a minute so, click on the storage account, on the left menu is "keys", copy the first key to your buffer, so you can paste is later. 
 
-Create a storage container.  Put your storage key where it says <changeme>.  Don't worry, we're almost there now.
+Create a storage container.  Put your storage key where it says changeme.  Don't worry, we're almost there now.
 
 **az storage container create --account-name sabwaf --name contbwaf3 --auth-mode key --account-key changeme**
 
