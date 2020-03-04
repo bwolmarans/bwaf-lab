@@ -38,6 +38,15 @@ Unless you are the SE creating the storage account, you can just start with this
 
 **az group deployment create --parameters '{"saKey": {"value": "changeme"}}' --resource-group sko2020bwaf --template-uri https://raw.githubusercontent.com/bwolmarans/bwaf-lab/master/sko_bwaf_deployment.json**
 
+Now go to the Azure portal, and watch the Resource Group **sko2020bwaf** get populated with vnets, vnics, subnets, and the bwaf virtual machine, and some other things too.
+
+After 4 minutes the bwaf virtual machine should be up and running, you can login to it with the username admin and a secret password that you can either guess, or will be written on the whiteboard in the lab.
+
+But the key is you will notice the bwaf has automatically licensed itself with a BYOL license, not a PAYG license, and that is significant because there are some important features that are only available in BYOL.
+
+Now you can proceed to the other lab guide.
+
+----------
 
 # bwaf-lab #
 
