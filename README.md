@@ -5,6 +5,10 @@ These are the steps to use ARM templates hosted in this repo to create a resourc
 
 Go to the azure portal. open the azure shell.
 
+Accept the BYOL license with this command:
+
+**az vm image terms accept --urn barracudanetworks:waf:byol:latest**
+
 Create a group.  I think for the SE's, only one SE will have to do this group creation.  The others can skip to the az group deployment create command.
 
 **az group create --name sko2020bwaf --location eastus**
