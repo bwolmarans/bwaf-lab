@@ -7,32 +7,36 @@ Go to the azure portal. open the azure shell.
 
 Create a group.  I think for the SE's, only one SE will have to do this group creation.  The others can skip to the az group deployment create command.
 
-az group create --name sko2020bwaf --location eastus
+**az group create --name sko2020bwaf --location eastus**
 
 Create a storage account.
 
-az storage account create --name sabwaf --resource-group sko2020bwaf --location eastus --sku Standard_ZRS
+**az storage account create --name sabwaf --resource-group sko2020bwaf --location eastus --sku Standard_ZRS**
 
-Create a storage container.  Don't worry, we're almost there now.
-
-az storage container create --account-name sabwaf --name contbwaf3 --auth-mode key --account-key changeme
-
-wget from this repo the file named barracuda-byol-license-list.json.gpg and ask Brett for the password.
-wget https://github.com/bwolmarans/bwaf-lab/blob/master/barracuda-byol-license-list.json.gpg?raw=true
-
-decrypt the license file using gpg -d barracuda-byol-license-list.json.gpg and the password you got from Brett
-
-Now upload the license file, affectionately known in Azure storage terminology as a blob, using this command:
 In the Azure gui, after a minute so, click on the storage account, on the left menu is "keys", copy the first key to your buffer, so you can paste is later. 
 
-az storage blob upload --account-name sabwaf --container-name contbwaf3 --name barracuda-byol-license-list.json --file barracuda-byol-license-list.json --auth-mode key --account-key <right click, paste, put your azure storage account key here>
+Create a storage container.  Put your storage key where it says <changeme>.  Don't worry, we're almost there now.
+
+**az storage container create --account-name sabwaf --name contbwaf3 --auth-mode key --account-key changeme**
+
+wget from this repo the file named barracuda-byol-license-list.json.gpg and ask Brett for the password.
+
+**wget https://github.com/bwolmarans/bwaf-lab/blob/master/barracuda-byol-license-list.json.gpg?raw=true**
+
+decrypt the license file using
+
+**gpg -o barracuda-byol-license-list.json --decrypt** and use the password you got from Brett
+
+Now upload the license file, affectionately known in Azure storage terminology as a blob, using this command:
+( Put your storage account key instead of changeme )
+
+**az storage blob upload --account-name sabwaf --container-name contbwaf3 --name barracuda-byol-license-list.json --file barracuda-byol-license-list.json --auth-mode key --account-key changeme**
 
 Now actually create the BWAF virtual machine and everything it needs to work. It will automatically get a BYOL license from the file uploaded.  You must please change the string changeme to be your azure storage account key. Just use copy and paste to get the job done!
 
 Unless you are the SE creating the storage account, you can just start with this command and skip the others:
 
-
-az group deployment create --parameters '{"saKey": {"value": "changeme"}}' --resource-group sko2020bwaf --template-uri https://raw.githubusercontent.com/bwolmarans/bwaf-lab/master/sko_bwaf_deployment.json
+**az group deployment create --parameters '{"saKey": {"value": "changeme"}}' --resource-group sko2020bwaf --template-uri https://raw.githubusercontent.com/bwolmarans/bwaf-lab/master/sko_bwaf_deployment.json**
 
 
 # bwaf-lab #
