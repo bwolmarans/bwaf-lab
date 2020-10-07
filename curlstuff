@@ -7,3 +7,10 @@ sudo su
 apt-get --yes --force-yes update
 apt install docker.io --yes --force-yes
 docker run -d --rm -it -p 8080:80 vulnerables/web-dvwa
+
+for ((i=1;i<=10000;i++)); do curl -v -k "http://webgoat.wolmarans.com/WebGoat/login/"; sleep 10; done
+
+curl -i -X POST -d username='<script>alert("Hello!!!");</script>' -d password=pass http://alb1-1319124074.us-east-1.elb.amazonaws.com/WebGoat/login
+
+for ((i=1;i<=10000;i++)); do curl -i -X POST -d username='<script>alert("Hello!!!");</script>' -d password=pass http://alb1-1319124074.us-east-1.elb.amazonaws.com/WebGoat/login; sleep 10; done  ← GOLDEN CALF!
+
