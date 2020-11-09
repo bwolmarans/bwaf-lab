@@ -1,14 +1,34 @@
 #CURL COMMANDS and SSH
+quick-n-dirty curl examples out of the blue:
 
+
+
+
+
+11:31
 root@kali:/home/ec2-user# cat bwaf_login.sh
 curl $1/restapi/v3.1/login -X POST -H Content-Type:application/json -d '{"username":"'$2'", "password":"'$3'"}' > blah.txt
 sed 's/"/ /g' < blah.txt | awk '{print "-u \"" $4 ":\"" }' > token.txt
 echo "Your Token Is: "
 cat token.txt
 echo "Example of using this token to get the services on the waf: curl -K token.txt <waf url>/restapi/v3.1/services"
-
+root@kali:/home/ec2-user# ./bwaf_login.sh http://bwaf99.eastus.cloudapp.azure.com:8000 admin REDACTED
+% Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   168    0   124  100    44    733    260 --:--:-- --:--:-- --:--:--   994
+Your Token Is:
+-u "eyJldCI6IjE2MDQ5NjI5MTgiLCJwYXNzd29yZCI6IjUwYjc1MDM5MGIzZWFhNDNhMzdiNDU2ODBj\nMjBjNmRmIiwidXNlciI6ImFkbWluIn0=\n:"
+Example of using this token to get the services on the waf: curl -K token.txt <waf url>/restapi/v3.1/services (edited) 
+11:31
 root@kali:/home/ec2-user# curl -K token.txt http://bwaf99.eastus.cloudapp.azure.com:8000/restapi/v3.1/services
-{"token":"eyJ1c2VyIjoiYWRtaW4iLCJwYXNzd29yZCI6IjNiNTViMzZjZTk1YTAxYTg2ZjI1NzdlMTJmMGZl\nMGYxIiwiZXQiOiIxNjA0OTYyMTkxIn0=\n","data":{"web1":{"SSL Client ETC
+{"token":"eyJ1c2VyIjoiYWRtaW4iLCJwYXNzd29yZCI6IjNiNTViMzZjZTk1YTAxYTg2ZjI1NzdlMTJmMGZl\nMGYxIiwiZXQiOiIxNjA0OTYyMTkxIn0=\n","data":{"web1":{"SSL Client Auth
+entication":{"enforce-client-certificate":"Yes","trusted-certificates":[],"client-certificate-for-rule":[],"client-authentication":"Disable"},"Adaptive Prof
+iling":{"content-types":["text/html","text/css"],"trusted-host-group":"","ignore-parameters":[],"request-learning":"Successes and Redirects","response-learn
+ing":"Successes and Redirects","navigation-parameters":[],"status":"Off"},"Comment Spam":{"exception-patterns":[],"parameter":[]},"URL Encryption":{"status"
+:"On"},"Basic Security":{"web-firewall-log-level":"5-Notice","mode":"Active","ignore-case":"Yes","rate-control-pool":"NONE","rate-control-status":"Off","tru
+sted-hosts-action":"Default","trust < ETC ETC ETC >
+
+
 
 curl http://<your BWAF public IP>:8000/restapi/v3.1/login -X POST -H Content-Type:application/json -d '{"username": "admin", "password": "Hello123456!"}' 
 curl -X POST "http://<your BWAF public IP>:8000/restapi/v3.1/services " -H "accept: application/json" -u "eyJldCI6IjE1NzkzOTE3NTAiLCJ1c2VyIjoiYWRtaW4iLCJwYXNzd29yZCI6IjNkYWMwMDMzNTI2\nZGFjMDUxZThmZmM0YzY4ZWEzZmU0In0=\n:" -H "Content-Type: application/json" -d '{ "address-version": "IPv4", "app-id": "curl_app_id", "ip-address": "10.0.1.5", "name": "curl_service", "port": 80, "status": "On", "type": "HTTP"}'
