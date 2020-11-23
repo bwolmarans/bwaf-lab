@@ -1,4 +1,4 @@
-#CURL COMMANDS and SSH
+#CURL COMMANDS and SSH ( POST at the bottom json )
 quick-n-dirty curl examples out of the blue:
 
 
@@ -45,3 +45,41 @@ curl -i -X POST -d username='<script>alert("Hello!!!");</script>' -d password=pa
 
 for ((i=1;i<=10000;i++)); do curl -i -X POST -d username='<script>alert("Hello!!!");</script>' -d password=pass http://alb1-1319124074.us-east-1.elb.amazonaws.com/WebGoat/login; sleep 10; done  ← GOLDEN CALF!
 
+root@kali:/home/ec2-user# cat bwaf_exported_snippet.json
+{
+ "config": [
+  {
+   "operation": "EDIT",
+   "type": "client-profile",
+   "payload": {
+    "high-risk-score": "80",
+    "medium-risk-score": "60",
+    "exception-client-fingerprints": [],
+    "client-profile": "Yes"
+   },
+   "parent": "/restapi/v3/security-policies/default"
+  }
+ ],
+ "Metadata": {
+  "Hostname": "barracuda",
+  "Serial Number": "1321665",
+  "System IP Address": "10.5.2.6",
+  "Firmware Version": "10.1.1.006",
+  "Number of Objects": 1,
+  "Generation Time": "2020-11-22_07-56-06"
+ }
+}
+root@kali:/home/ec2-user# cat bwaf_json_
+bwaf_json_encoded.txt  bwaf_json_post.sh
+root@kali:/home/ec2-user# cat bwaf_json_post.sh
+curl $1/restapi/v3.1/login -X POST -H Content-Type:application/json -d '{"username":"'$2'", "password":"'$3'"}' > blah.txt
+sed 's/"/ /g' < blah.txt | awk '{print "-u \"" $4 ":\"" }' > bwaf_token.txt
+echo "Your Token Is: "
+cat bwaf_token.txt
+echo -n '{ "json-file-content": "' > bwaf_import_snippet.json
+base64 bwaf_exported_snippet.json > bwaf_json_encoded.txt
+cat bwaf_json_encoded.txt >> bwaf_import_snippet.json
+echo '", "operation": "Validate"}' >> bwaf_import_snippet.json
+cat bwaf_import_snippet.json
+curl -K bwaf_token.txt -X POST $1/restapi/v3.1/ops/import-configuration -H "accept: application/json" -H "Content-Type: application/json" -d @bwaf_import_snippet.json
+root@kali:/home/ec2-user#
