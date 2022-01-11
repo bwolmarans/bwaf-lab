@@ -45,7 +45,7 @@
 #  - name: "password"
 #    prompt: "Enter the account password:"
 #    private: no
-#    default: "Hello123456!"
+#    default: "Hello123456!" <- look ... this repo is for an ephermeral learning lab. not prod.  have fun script scrapers! 
 #
   vars:
     username: "admin"
