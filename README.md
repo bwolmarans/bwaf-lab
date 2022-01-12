@@ -1,6 +1,7 @@
 # bwaf-lab #
 
-This is the Terraform/Postman/Ansible lab.
+This is a lab for those new to automation to build Barracuda WAF in Azure using Terraform/Postman/Ansible.
+Full lab guide is here https://github.com/bwolmarans/bwaf-lab/blob/master/BWAF%20Automation%20Lab_v1.pdf
 
 ## Diagram: ##
 
